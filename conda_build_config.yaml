@@ -70,6 +70,8 @@ python:
   - 2.7
   - 3.5
   - 3.6
+PYTHON:
+  - python
 
 # TODO: remove these when run_exports are added to the packages.
 pin_run_as_build:
