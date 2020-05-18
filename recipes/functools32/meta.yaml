@@ -1,29 +1,25 @@
-{% set name = "functools32" %}
 {% set version = "3.2.3" %}
 {% set subversion = "2" %}
-{% set number = 2 %}
-{% set sha256 = "f6253dfbe0538ad2e387bd8fdfd9293c925d63553f5813c4e587745416501e6d" %}
 
 package:
-  name: {{ name|lower }}
+  name: functools32
   version: {{ version }}.{{ subversion }}
 
 source:
-  fn: {{ name }}-{{ version }}-{{ subversion }}.tar.gz
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}-{{ subversion }}.tar.gz
-  sha256: {{ sha256 }}
+  url: https://pypi.io/packages/source/f/functools32/functools32-{{ version }}-{{ subversion }}.tar.gz
+  sha256: f6253dfbe0538ad2e387bd8fdfd9293c925d63553f5813c4e587745416501e6d
 
 build:
-  skip: true  # [not py27]
-  number: {{ number }}
-  script: python setup.py install
+  number: 3
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
 
 requirements:
-  build:
-    - python
-
+  host:
+    - python <3
+    - pip
   run:
-    - python
+    - python <3
 
 test:
   imports:
@@ -33,7 +29,7 @@ about:
   home: https://github.com/MiCHiLU/python-functools32
   license: PSF 2
   license_file: LICENSE
-  summary: 'Backport of the functools module from Python 3.2.3 for use on 2.7 and PyPy.'
+  summary: 'Backport of the functools module from Python 3.2.3 for use on 2.7 and PyPy'
 
 extra:
   recipe-maintainers:

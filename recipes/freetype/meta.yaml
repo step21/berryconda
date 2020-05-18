@@ -1,18 +1,18 @@
-{% set version = "2.9.1" %}
+{% set version = "2.10.1" %}
 
 package:
   name: freetype
   version: {{ version }}
 
 source:
-  url: http://download.savannah.gnu.org/releases/freetype/freetype-{{ version }}.tar.bz2
-  sha256: db8d87ea720ea9d5edc5388fc7a0497bb11ba9fe972245e0f7f4c7e8b1e1e84d
+  url: http://download.savannah.gnu.org/releases/freetype/freetype-{{ version }}.tar.gz
+  sha256: 3a60d391fd579440561bf0e7f31af2222bc610ad6ce4d9d7bd2165bca8669110
   patches:
-    - 0001-Unbreak-CMake-Windows-installation.patch
-    - 0002-Win-Specify-RUNTIME-destination-for-dll.patch
+    - 0003-Install-the-pkg-config-file-on-Windows-too.patch
+    - 0004-Fix-the-CMake-versioning-information.patch
 
 build:
-  number: 2
+  number: 0
   run_exports:
     # has removed symbols at minor versions, but only very rarely.  Go with major.
     #    https://abi-laboratory.pro/tracker/timeline/freetype/
@@ -21,8 +21,9 @@ build:
 requirements:
   build:
     - {{ compiler('c') }}
-    - cmake  # [win]
-    - make   # [not win]
+    - cmake     # [win]
+    - make      # [not win]
+    - ninja  # [win]
   host:
     - libpng
     - zlib
@@ -38,7 +39,9 @@ test:
 about:
   home: https://www.freetype.org/
   license: GPL-2.0 and FreeType
-  license_url: http://freetype.sourceforge.net/FTL.TXT
+  license_file:
+    - docs/GPLv2.TXT
+    - docs/FTL.TXT
   summary: A Free, High-Quality, and Portable Font Engine
   description: |
     FreeType is designed to be small, efficient, highly customizable

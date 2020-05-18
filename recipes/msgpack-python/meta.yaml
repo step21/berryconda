@@ -1,32 +1,24 @@
-{% set name = "msgpack-python" %}
-{% set pypi_name = "msgpack" %}
-{% set version = "0.5.6" %}
-{% set bundle = "tar.gz" %}
-{% set hash_type = "sha256" %}
-{% set hash = "0ee8c8c85aa651be3aa0cd005b5931769eaa658c948ce79428766f1bd46ae2c3" %}
+{% set version = "1.0.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: msgpack-python
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.{{ bundle }}
-  url: https://pypi.io/packages/source/{{ pypi_name[0] }}/{{ pypi_name }}/{{ pypi_name }}-{{ version }}.{{ bundle }}
-  {{ hash_type }}: {{ hash }}
+  url: https://pypi.io/packages/source/m/msgpack/msgpack-{{ version }}.tar.gz
+  sha256: 9534d5cc480d4aff720233411a1f765be90885750b07df772380b34c10ecb5c0
 
 build:
-  number: 2
-  script: python -m pip install --no-deps --ignore-installed .
+  number: 1
+  script: "{{ PYTHON }} -m pip install . -vv"
 
 requirements:
   build:
     - {{ compiler("cxx") }}
-
   host:
     - python
     - pip
     - cython >=0.16
-
   run:
     - python
 
@@ -36,9 +28,9 @@ test:
 
 about:
   home: http://msgpack.org/
-  license: Apache 2.0
+  license: Apache-2.0
   license_file: COPYING
-  summary: 'MessagePack (de)serializer.'
+  summary: 'MessagePack (de)serializer'
   license_family: Apache
   dev_url: https://github.com/msgpack/msgpack-python
 
@@ -46,3 +38,5 @@ extra:
   recipe-maintainers:
     - jakirkham
     - pmlandwehr
+    - ocefpaf
+    - carlodri

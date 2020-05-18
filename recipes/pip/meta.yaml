@@ -1,4 +1,4 @@
-{% set version = "18.0" %}
+{% set version = "20.0.2" %}
 
 package:
   name: pip
@@ -6,13 +6,14 @@ package:
 
 source:
   url: https://pypi.io/packages/source/p/pip/pip-{{ version }}.tar.gz
-  sha256: a0e11645ee37c90b40c46d607070c4fd583e2cd46231b1c06e389c5e814eed76
+  sha256: 7db0c8ea4c7ea51c8049640e8e6e7fde949de672bfa4949920675563a5a6967f
 
 build:
-  number: 1
+  noarch: python
+  number: 2
   disable_pip: True
   entry_points:
-    - pip = pip._internal:main
+    - pip = pip._internal.cli.main:main
 
 requirements:
   host:

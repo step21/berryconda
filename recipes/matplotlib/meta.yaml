@@ -1,58 +1,121 @@
 # Full credit goes to https://github.com/conda/conda-recipes for providing this recipe.
 # It has been subsequently adapted for automated building with conda-forge.
 
-{% set version = "2.1.2" %}
+{% set version = "3.2.1" %}
 
 package:
-  name: matplotlib
+  name: matplotlib-base
   version: {{ version }}
 
 source:
-  fn: matplotlib-{{ version }}.tar.gz
   url: https://github.com/matplotlib/matplotlib/archive/v{{ version }}.tar.gz
-  sha256: 613d79282a0a8ba88cfc52dbcf1b08ab070dae395c3d313d141ccc3f87e3c9fa
+  sha256: 5462728ed3be60af21bd8a6b33f5f1632dabdb3c1b3cc279cffb05926a48255c
+
 
 build:
-    number: 0
+  number: 0
+  skip: true  # [py<35]
 
-requirements:
-  build:
-    - python
-    - setuptools
-    - backports.functools_lru_cache
-    - numpy 1.11*
-    - python-dateutil
-    - freetype 2.7.*
-    - cycler >=0.10
-    - nose
-    - pyparsing
-    - pytz
-    - libpng >=1.6.23,<1.7
-    - tk 8.6.*
-    - functools32  # [py27]
-    - subprocess32 # [py27]
-  run:
-    - python
-    - backports.functools_lru_cache
-    - numpy >=1.11
-    - cycler >=0.10
-    - python-dateutil
-    - freetype 2.7.*
-    - pytz
-    - pyparsing
-    - libpng >=1.6.23,<1.7
-    - tk 8.6.*
-    - functools32  # [py2k]
-    - subprocess32 # [py27]
-    - setuptools
-
-test:
-    imports:
+outputs:
+  - name: matplotlib-base
+    script: build_base.bat  # [win]
+    script: build_base.sh  # [not win]
+    requirements:
+      build:
+        - pkg-config  # [not win]
+        - {{ compiler('c') }}
+        - {{ compiler('cxx') }}
+      host:
+        - python
+        - pip
+        - numpy
+        - cycler >=0.10
+        - python-dateutil
+        - freetype
+        - nose
+        - pyparsing
+        - libpng
+        - zlib  # [win]
+        - tk  # [linux]
+        - icu  # [linux]
+      run:
+        - python
+        - setuptools
+        - {{ pin_compatible('numpy') }}
+        - cycler >=0.10
+        - python-dateutil
+        - freetype
+        - pyparsing
+        - libpng
+        - tk  # [linux]
+        - icu  # [linux]
+        - tornado
+        - kiwisolver
+    test:
+      requires:
+        - pytest
+      imports:
         - matplotlib
         - matplotlib.pyplot
+        - matplotlib._image
+        - matplotlib._path
+        - matplotlib._png
+        - matplotlib._tri
+        - matplotlib.backends._backend_agg
+        - matplotlib.ft2font
+        - matplotlib.ttconv
+        - matplotlib.backends._tkagg  # [not win]
         - mpl_toolkits
+        - pylab
+
+  - name: matplotlib
+    build:
+    requirements:
+      run:
+        - pyqt  # [not osx and not aarch64 and not ppc64le]
+        - {{ pin_subpackage('matplotlib-base', max_pin="x.x.x.x") }}
+    test:
+      imports:
+        - matplotlib
+
+  - name: mpl_sample_data
+    script: install-data.sh  # [not win]
+    script: install-data.bat  # [win]
+    build:
+      noarch: python
+    requirements:
+      host:
+        - python
+      run:
+        - python
+        # match major/minor version, but allow noarch
+        - {{ pin_subpackage('matplotlib-base', max_pin="x.x") }}
+    test:
+      imports:
+        - matplotlib.cbook
+      commands:
+        - python -c "import matplotlib; matplotlib.cbook.get_sample_data('msft.csv', asfileobj=False)"
 
 about:
   home: http://matplotlib.org/
-  license: PSF-based (http://matplotlib.org/users/license.html)
+  license: PSF-based
+  license_url: http://matplotlib.sourceforge.net/users/license.html
+  license_family: PSF
+  license_file: LICENSE/LICENSE
   summary: Publication quality figures in Python
+  description: |
+    matplotlib is a python 2D plotting library which produces publication
+    quality figures in a variety of hardcopy formats and interactive
+    environments across platforms. matplotlib can be used in Python scripts,
+    the Python and IPython shell (ala MATLAB or Mathematica), web
+    application servers, and six graphical user interface toolkits.
+  dev_url: https://github.com/matplotlib/matplotlib/
+  doc_url: http://matplotlib.org/contents.html
+
+extra:
+  recipe-maintainers:
+    - mdboom
+    - ocefpaf
+    - pelson
+    - tacaswell
+    - dopplershift

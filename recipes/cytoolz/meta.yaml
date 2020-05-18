@@ -1,32 +1,32 @@
-{% set version = "0.9.0.1" %}
+{% set version = "0.10.1" %}
 
 package:
   name: cytoolz
   version: {{ version }}
 
 source:
-  fn: cytoolz-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/c/cytoolz/cytoolz-{{ version }}.tar.gz
-  sha256: 84cc06fa40aa310f2df79dd440fc5f84c3e20f01f9f7783fc9c38d0a11ba00e5
+  sha256: 82f5bba81d73a5a6b06f2a3553ff9003d865952fcb32e1df192378dd944d8a5c
 
 build:
   number: 0
-  script: python setup.py install --no-cython --single-version-externally-managed --record=record.txt
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv --global-option=--with-cython"
 
 requirements:
   build:
     - {{ compiler('c') }}
   host:
     - python
-    - setuptools
+    - cython
+    - pip
   run:
     - python
-    - toolz >=0.8.0
+    - toolz >=0.10.0
 
 test:
   requires:
     - nose
-    - toolz 0.8.2
+    - toolz 0.10.0
   imports:
     - cytoolz
     - cytoolz.curried
@@ -35,8 +35,16 @@ test:
 
 about:
   home: https://github.com/pytoolz/cytoolz
-  license: BSD 3-Clause
-  summary: Cython implementation of Toolz. High performance functional utilities.
+  license: BSD-3-Clause
+  license_file: LICENSE.txt
+  summary: Cython implementation of Toolz. High performance functional utilities
+  description: |
+    CyToolz is the Cython implementation of the toolz package, which provides
+    high performance utility functions for iterables, functions, and
+    dictionaries.
+  doc_url: https://pypi.python.org/pypi/cytoolz
+  doc_source_url: https://github.com/pytoolz/cytoolz/blob/master/README.rst
+  dev_url: https://github.com/pytoolz/cytoolz
 
 extra:
   recipe-maintainers:

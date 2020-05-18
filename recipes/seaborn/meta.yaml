@@ -1,41 +1,41 @@
-{% set version = "0.9.0" %}
-{% set name = "seaborn" %}
-{% set sha256 = "76c83f794ca320fb6b23a7c6192d5e185a5fcf4758966a0c0a54baee46d41e2f" %}
+{% set version = "0.10.0" %}
 
 package:
-  name: {{ name }}
+  name: seaborn
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: {{ sha256 }}
+  url: https://pypi.io/packages/source/s/seaborn/seaborn-{{ version }}.tar.gz
+  sha256: 59fe414e138d7d5ea08b0feb01b86caf4682e36fa748e3987730523a89aecbb9
 
 build:
+  number: 1
   noarch: python
-  number: 0
-  script: python -m pip install --no-deps --ignore-installed .
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
   host:
+    - python >=3.6
     - pip
-    - python
-    - setuptools
   run:
-    - python
-    - numpy >=1.9.3
-    - matplotlib >=1.4.3
-    - scipy >=0.15.2
-    - pandas >=0.14.0
-    - statsmodels >=0.5.0
+    - python >=3.6
+    - numpy >=1.13.3
+    - matplotlib-base >=2.1.2
+    - scipy >=1.0.1
+    - pandas >=0.22.0
+    - statsmodels >=0.8.0
 
 test:
   imports:
-    - {{ name }}
+    - seaborn
+  requires:
+    - pip
+  commands:
+    - pip check
 
 about:
   home: https://seaborn.pydata.org
-  license: BSD 3-Clause
+  license: BSD-3-Clause
   license_family: BSD
   license_file: LICENSE
   summary: Statistical data visualization

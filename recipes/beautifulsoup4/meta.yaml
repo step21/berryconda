@@ -1,4 +1,4 @@
-{% set version = "4.6.3" %}
+{% set version = "4.9.0" %}
 
 package:
   name: beautifulsoup4
@@ -6,23 +6,42 @@ package:
 
 source:
   url: https://pypi.io/packages/source/b/beautifulsoup4/beautifulsoup4-{{ version }}.tar.gz
-  sha256: 90f8e61121d6ae58362ce3bed8cd997efb00c914eae0ff3d363c32f9a9822d10
+  sha256: 594ca51a10d2b3443cbac41214e12dbb2a1cd57e1a7344659849e2e20ba6a8d8
 
 build:
-  # use 2to3 and cannot be noarch
+  # Uses 2to3 and cannot be noarch.
   number: 0
-  script: python -m pip install --no-deps --ignore-installed .
 
-requirements:
-  host:
-    - python
-    - pip
-  run:
-    - python
+outputs:
+  - name: beautifulsoup4
+    script: build_base.bat  # [win]
+    script: build_base.sh  # [not win]
+    requirements:
+      host:
+        - python
+        - pip
+      run:
+        - python
+        - soupsieve >=1.2  # [py3k]
+        - soupsieve <2.0  # [py2k]
+    test:
+      imports:
+        - bs4
+        - bs4.builder
+      commands:
+        - pip check
+      requires:
+        - pip
 
-test:
-  imports:
-    - bs4
+  - name: bs4
+    build:
+      noarch: generic
+    requirements:
+      run:
+        - {{ pin_subpackage('beautifulsoup4', max_pin="x.x.x") }}
+    test:
+      imports:
+        - bs4
 
 about:
   home: http://www.crummy.com/software/BeautifulSoup/

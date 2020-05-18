@@ -1,4 +1,4 @@
-{% set version = "0.2.0" %}
+{% set version = "1.1.1" %}
 
 package:
   name: jupyterlab_server
@@ -7,30 +7,37 @@ package:
 source:
   fn: jupyterlab_server-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/j/jupyterlab_server/jupyterlab_server-{{ version }}.tar.gz
-  sha256: 72d916a73957a880cdb885def6d8664a6d1b2760ef5dca5ad665aa1e8d1bb783
+  sha256: b5921872746b1ca109d1852196ed11e537f8aad67a1933c1d4a8ac63f8e61cca
 
 build:
-    number: 0
-    noarch: python
-    script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
 
 requirements:
   host:
     - pip
     - python >=3.5
-    - setuptools
 
   run:
     - python >=3.5
-    - notebook
+    - json5
+    - jsonschema >=3.0.1
+    - notebook >=4.2.0
+    - jinja2 >=2.10
+    - requests
 
 test:
+  requires:
+    - pip
   imports:
     - jupyterlab_server
+  commands:
+    - python -m pip check
 
 about:
-  home: http://github.com/jupyterlab/jupyterlab_server
-  license: BSD 3-Clause
+  home: https://github.com/jupyterlab/jupyterlab_server
+  license: BSD-3-Clause
   license_file: LICENSE
   summary: A set of server components for JupyterLab and JupyterLab like applications.
 
@@ -40,3 +47,4 @@ extra:
     - blink1073
     - afshin
     - SylvainCorlay
+    - bollwyvl

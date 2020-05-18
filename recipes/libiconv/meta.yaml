@@ -14,7 +14,7 @@ source:
     - configure.cmake.patch  # [win]
 
 build:
-  number: 1003
+  number: 1006
   run_exports:
     # Pretty good recently, let's trust them.
     #   https://abi-laboratory.pro/tracker/timeline/libiconv/
@@ -23,8 +23,10 @@ build:
 requirements:
   build:
     - {{ compiler('c') }}
-    - cmake   # [win]
+    - cmake     # [win]
+    - ninja     # [win]
     - m2-patch  # [win]
+    - make      # [unix]
 
 test:
   commands:

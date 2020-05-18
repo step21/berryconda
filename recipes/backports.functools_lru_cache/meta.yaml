@@ -1,4 +1,4 @@
-{% set version = "1.5" %}
+{% set version = "1.6.1" %}
 
 package:
   name: backports.functools_lru_cache
@@ -6,12 +6,12 @@ package:
 
 source:
   url: https://pypi.io/packages/source/b/backports.functools_lru_cache/backports.functools_lru_cache-{{ version }}.tar.gz
-  sha256: 9d98697f088eb1b0fa451391f91afb5e3ebde16bbdb272819fd091151fda4f1a
+  sha256: 8fde5f188da2d593bd5bc0be98d9abc46c95bb8a9dde93429570192ee6cc2d4a
 
 build:
   noarch: python
-  number: 1
-  script: python -m pip install --no-deps --ignore-installed .
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 requirements:
   host:
@@ -32,6 +32,7 @@ test:
 about:
   home: https://github.com/jaraco/backports.functools_lru_cache
   license: MIT
+  license_file: LICENSE
   license_family: MIT
   summary: 'Backport of functools.lru_cache from Python 3.3 as published at ActiveState.'
   doc_url: https://pypi.python.org/pypi/backports.functools_lru_cache

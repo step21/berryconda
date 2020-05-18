@@ -1,0 +1,93 @@
+{% set version = '6.0-86' %}
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-caret
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/caret_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/caret/caret_{{ version }}.tar.gz
+  sha256: da4a1c7c3fbf645c5b02871e563a77404622b83623f0d1c5dc1425de7aa4ce37
+
+build:
+  merge_build_host: True  # [win]
+  number: 1
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+requirements:
+  build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{posix}}filesystem        # [win]
+    - {{posix}}make
+    - {{posix}}sed               # [win]
+    - {{posix}}coreutils         # [win]
+    - {{posix}}zip               # [win]
+  host:
+    - r-base
+    - r-modelmetrics >=1.2.2.2
+    - r-foreach
+    - r-ggplot2
+    - r-lattice >=0.20
+    - r-nlme
+    - r-proc
+    - r-plyr
+    - r-recipes >=0.1.10
+    - r-reshape2
+    - r-withr >=2.0.0
+  run:
+    - r-base
+    - {{native}}gcc-libs         # [win]
+    - r-modelmetrics >=1.2.2.2
+    - r-foreach
+    - r-ggplot2
+    - r-lattice >=0.20
+    - r-nlme
+    - r-proc
+    - r-plyr
+    - r-recipes >=0.1.10
+    - r-reshape2
+    - r-withr >=2.0.0
+
+test:
+  commands:
+    - $R -e "library('caret')"           # [not win]
+    - "\"%R%\" -e \"library('caret')\""  # [win]
+
+about:
+  home: https://github.com/topepo/caret/
+  license: GPL-2.0-or-later
+  summary: Misc functions for training and plotting classification and regression models.
+  license_family: GPL2
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+
+extra:
+  recipe-maintainers:
+    - conda-forge/r
+
+# Package: caret
+# Version: 6.0-86
+# Title: Classification and Regression Training
+# Authors@R: c( person("Max", "Kuhn", role = c("aut", "cre"), email = "mxkuhn@gmail.com"), person("Jed", "Wing", role = "ctb"), person("Steve", "Weston", role = "ctb"), person("Andre", "Williams", role = "ctb"), person("Chris", "Keefer", role = "ctb"), person("Allan", "Engelhardt", role = "ctb"), person("Tony", "Cooper", role = "ctb"), person("Zachary", "Mayer", role = "ctb"), person("Brenton", "Kenkel", role = "ctb"), person("R Core Team", role = "ctb"), person("Michael", "Benesty", role = "ctb"), person("Reynald", "Lescarbeau", role = "ctb"), person("Andrew", "Ziem", role = "ctb"), person("Luca", "Scrucca", role = "ctb"), person("Yuan", "Tang", role = "ctb"), person("Can", "Candan", role = "ctb"), person("Tyler", "Hunt", role = "ctb") )
+# Description: Misc functions for training and plotting classification and regression models.
+# Depends: R (>= 3.2.0), lattice (>= 0.20), ggplot2
+# URL: https://github.com/topepo/caret/
+# BugReports: https://github.com/topepo/caret/issues
+# Imports: foreach, methods, plyr, ModelMetrics (>= 1.2.2.2), nlme, reshape2, stats, stats4, utils, grDevices, recipes (>= 0.1.10), withr (>= 2.0.0), pROC,
+# Suggests: BradleyTerry2, e1071, earth (>= 2.2-3), fastICA, gam (>= 1.15), ipred, kernlab, knitr, klaR, MASS, ellipse, mda, mgcv, mlbench, MLmetrics, nnet, party (>= 0.9-99992), pls, proxy, randomForest, RANN, spls, subselect, pamr, superpc, Cubist, testthat (>= 0.9.1), rpart, dplyr, covr
+# License: GPL (>= 2)
+# RoxygenNote: 7.0.2.9000
+# VignetteBuilder: knitr
+# Encoding: UTF-8
+# NeedsCompilation: yes
+# Packaged: 2020-03-20 03:09:16 UTC; max
+# Author: Max Kuhn [aut, cre], Jed Wing [ctb], Steve Weston [ctb], Andre Williams [ctb], Chris Keefer [ctb], Allan Engelhardt [ctb], Tony Cooper [ctb], Zachary Mayer [ctb], Brenton Kenkel [ctb], R Core Team [ctb], Michael Benesty [ctb], Reynald Lescarbeau [ctb], Andrew Ziem [ctb], Luca Scrucca [ctb], Yuan Tang [ctb], Can Candan [ctb], Tyler Hunt [ctb]
+# Maintainer: Max Kuhn <mxkuhn@gmail.com>
+# Repository: CRAN
+# Date/Publication: 2020-03-20 10:20:07 UTC

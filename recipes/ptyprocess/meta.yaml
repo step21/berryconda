@@ -9,12 +9,17 @@ source:
   sha256: 923f299cc5ad920c68f2bc0bc98b75b9f838b93b599941a6b63ddbc2476394c0
 
 build:
-  number: 0
-  skip: True  # [win]
+  number: 1001
+  script:
+    - flit build --format wheel
+    - "{{ PYTHON }} -m pip install dist/*.whl --no-deps -vv"
+  noarch: python
 
 requirements:
   host:
-    - python
+    - python >=3
+    - flit
+    - pip
   run:
     - python
 

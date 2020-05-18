@@ -1,0 +1,88 @@
+{% set version = "1.1" %}
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-irkernel
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/IRkernel_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/IRkernel/IRkernel_{{ version }}.tar.gz
+  sha256: 2469431c468a3f586ffe8adc260fa368fd8d6b4e65bde318f941fb1692ee38ee
+
+build:
+  merge_build_host: True  # [win]
+  number: 0
+  noarch: generic
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+requirements:
+  build:
+    - {{posix}}zip               # [win]
+  host:
+    - r-base
+    - r-irdisplay >=0.3.0.9999
+    - r-crayon
+    - r-digest
+    - r-evaluate >=0.10
+    - r-jsonlite >=0.9.6
+    - r-pbdzmq >=0.2_1
+    - r-repr >=0.4.99
+    - r-uuid
+  run:
+    - r-base
+    - r-irdisplay >=0.3.0.9999
+    - r-crayon
+    - r-digest
+    - r-evaluate >=0.10
+    - r-jsonlite >=0.9.6
+    - r-pbdzmq >=0.2_1
+    - r-repr >=0.4.99
+    - r-uuid
+
+test:
+  commands:
+    - $R -e "library('IRkernel')"           # [not win]
+    - "\"%R%\" -e \"library('IRkernel')\""  # [win]
+
+about:
+  home: https://CRAN.R-project.org/package=IRkernel
+  license: MIT
+  summary: ' The R kernel for the ''Jupyter'' environment executes R code which the front-end
+    (''Jupyter Notebook'' or other front-ends) submits to the kernel via the network.'
+  license_family: MIT
+  license_file: 
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/MIT'
+    - LICENSE
+
+extra:
+  recipe-maintainers:
+    - conda-forge/r
+    - ocefpaf
+    - mariusvniekerk
+    - philip-khor
+
+# Package: IRkernel
+# Title: Native R Kernel for the 'Jupyter Notebook'
+# Description:  The R kernel for the 'Jupyter' environment executes R code which the front-end ('Jupyter Notebook' or other front-ends) submits to the kernel via the network.
+# Version: 1.0.2
+# Authors@R: c( person('Thomas', 'Kluyver', role = c('aut', 'cph'), email = 'thomas@kluyver.me.uk'), person('Philipp', 'Angerer', role = c('aut', 'cph', 'cre'), email = 'phil.angerer@gmail.com', comment = c(ORCID = "0000-0002-0369-2888")), person('Jan', 'Schulz', role = c('aut', 'cph'), email = 'jasc@gmx.net'), person('Karthik', 'Ram', role = c('aut', 'cph'), email = 'karthik.ram@gmail.com'))
+# Depends: R (>= 3.2.0)
+# Suggests: testthat, roxygen2
+# SystemRequirements: jupyter, jupyter_kernel_test (Python package for testing)
+# License: MIT + file LICENSE
+# LazyData: true
+# Encoding: UTF-8
+# Imports: repr (>= 0.4.99), methods, evaluate (>= 0.10), IRdisplay (>= 0.3.0.9999), pbdZMQ (>= 0.2-1), crayon, jsonlite (>= 0.9.6), uuid, digest
+# Collate: 'class_unions.r' 'logging.r' 'comm_manager.r' 'compat.r' 'completion.r' 'environment_runtime.r' 'environment_shadow.r' 'options.r' 'execution.r' 'handlers.r' 'help.r' 'installspec.r' 'utils.r' 'kernel.r' 'main.r' 'onload.r'
+# RoxygenNote: 6.1.1
+# NeedsCompilation: no
+# Packaged: 2019-07-12 20:16:26 UTC; phil
+# Author: Thomas Kluyver [aut, cph], Philipp Angerer [aut, cph, cre] (<https://orcid.org/0000-0002-0369-2888>), Jan Schulz [aut, cph], Karthik Ram [aut, cph]
+# Maintainer: Philipp Angerer <phil.angerer@gmail.com>
+# Repository: CRAN
+# Date/Publication: 2019-07-12 20:30:04 UTC

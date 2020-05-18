@@ -1,53 +1,81 @@
-{% set version = "7.61.0" %}
+{% set version = "7.69.1" %}
 
 package:
-  name: curl
+  name: curl_split_recipe
   version: {{ version }}
 
 source:
   url: http://curl.haxx.se/download/curl-{{ version }}.tar.bz2
-  sha256: 5f6f336921cf5b84de56afbd08dfb70adeef2303751ffb3e570c936c6d656c9c
-  patches:
-    ###################################################
-    # Raised issue upstream on this issue.            #
-    #                                                 #
-    # xref: https://github.com/curl/curl/issues/2394  #
-    ###################################################
-    - drop_failing_tests_macos.diff  # [osx]
+  sha256: 2ff5e5bd507adf6aa88ff4bbafd4c7af464867ffb688be93b9930717a56c4de8
 
 build:
-  number: 1
-  detect_binary_files_with_prefix: True
+  number: 0
 
 requirements:
   build:
+    - {{ compiler('c') }}
+    - make             # [unix]
+    # perl is required to run the tests on UNIX.
     - perl  # [unix]
     - pkg-config  # [unix]
-    - {{ compiler('c') }}
-    - {{ compiler('cxx') }}
   host:
-    # python is a build requirement on Windows to resolve features.
-    # perl is required to run the tests on nix*.
+    - zlib
     - krb5
     - libssh2
     - openssl        # [unix]
     - zlib
-  run:
-    - krb5
-    - libssh2
-    - openssl          # [unix]
-    - zlib
 
-test:
-  commands:
-    - curl --version
-    - curl-config --features  # [not win]
-    - curl-config --protocols  # [not win]
-    - curl https://raw.githubusercontent.com/conda-forge/curl-feedstock/master/LICENSE
-    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
-    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
-    - nm $PREFIX/lib/libcurl$SHLIB_EXT | grep libssh2_scp_recv2  # [linux]
-    - ldd $PREFIX/lib/libcurl.so  # [linux]
+
+outputs:
+  - name: libcurl
+    requirements:
+      build:
+        - {{ compiler('c') }}
+      host:
+        - openssl   # [unix]
+        - zlib
+        - libssh2
+        - krb5
+      run:
+        - libssh2
+    build:
+      run_exports:
+        - {{ pin_subpackage('libcurl') }}
+    files:
+      - include/curl             # [unix]
+      - lib/libcurl*             # [unix]
+      - lib/pkgconfig/libcurl*   # [unix]
+      - bin/curl-config          # [unix]
+      - Library/bin/libcurl.dll  # [win]
+      - Library/include/curl     # [win]
+      - Library/lib/libcurl*     # [win]
+    test:
+      commands:
+        - curl-config --features       # [not win]
+        - curl-config --protocols      # [not win]
+
+  - name: curl
+    files:
+      - bin/curl               # [unix]
+      - Library/bin/curl.exe   # [win]
+      - Library/bin/curl.exe.manifest  # [win]
+    requirements:
+      build:
+        - {{ compiler('c') }}
+      host:
+        - {{ pin_subpackage('libcurl', exact=True) }}
+        - zlib
+        - libssh2
+        - krb5
+      run:
+        - {{ pin_subpackage('libcurl', exact=True) }}
+        - libssh2
+    test:
+      commands:
+        # curl help commands on Windows have non-zero status codes.  Need other test.
+        - curl --help
+        # Try downloading something from https to make sure the certs are used correctly.
+        - curl https://raw.githubusercontent.com/conda-forge/curl-feedstock/master/LICENSE
 
 about:
   home: http://curl.haxx.se/
@@ -56,8 +84,17 @@ about:
   license_file: COPYING
   summary: tool and library for transferring data with URL syntax
 
+  description: |
+    Curl is an open source command line tool and library for transferring data
+    with URL syntax. It is used in command lines or scripts to transfer data.
+  doc_url: https://curl.haxx.se/docs/
+  dev_url: https://github.com/curl/curl
+  doc_source_url: https://github.com/curl/curl/tree/master/docs
+
 extra:
   recipe-maintainers:
     - msarahan
     - jakirkham
     - ocefpaf
+    - mingwandroid
+    - xylar

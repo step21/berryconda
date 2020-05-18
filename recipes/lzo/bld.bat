@@ -5,6 +5,9 @@ set INCLUDE=%LIBRARY_INC%;%INCLUDE%;%RECIPE_DIR%
 mkdir cmake-build
 cd cmake-build
 
+set CFLAGS=
+set CXXFLAGS=
+
 :: Configure.
 cmake -G "NMake Makefiles" ^
       -DCMAKE_BUILD_TYPE=Release ^

@@ -9,6 +9,22 @@ source:
   url: https://pypi.io/packages/source/p/pycrypto/pycrypto-{{ version }}.tar.gz
   md5: 55a61a054aa66812daf5161a0d5d7eda
   patches:
+    # Patches from debian, some build related, others concerning CVEs
+    # Gotten from http://ftp.debian.org/debian/pool/main/p/python-crypto/
+    - 0001-dont-drop-g.patch
+    - 0002-fix-unresolved-reference-size.patch
+    - 0003-fix-epydoc-ignore.patch
+    - 0004-fix-cipher-iv-documentation.patch
+    - 0005-reenable-redefined-tests.patch
+    - 0006-fix-py3-errors.patch
+    - 0007-fix-except-shadows-builtin.patch
+    - 0008-multiprocessing-test.patch
+    - 0009-unittest-stream.patch
+    - 0010-deprecated-test-methods.patch
+    - 0011-asn1-decoding.patch
+    - 0012-CVE-2013-7459.patch
+    - 0013-Backport-of-fix-for-CVE-2018-6594-from-pycryptodome.patch
+
     # Add a patch to fix an error in a test. See PR below for details.
     # https://github.com/dlitz/pycrypto/pull/22
     - pycrypto_PR_22.diff
@@ -23,16 +39,18 @@ source:
     - pycrypto_PR_200.diff
 
 build:
-  number: 1
+  number: 1004
   script:
     - set CL=/FI"%VCINSTALLDIR%\\INCLUDE\\stdint.h" %CL%  # [win and py>=35]
     - export LDFLAGS="-headerpad_max_install_names"       # [osx]
-    - python setup.py install test
+    - "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
   build:
+    - {{ compiler('c') }}
+  host:
     - python
-
+    - pip
   run:
     - python
 
@@ -62,8 +80,17 @@ test:
 about:
   home: http://www.pycrypto.org/
   license: Public Domain
+  license_file: COPYRIGHT
   summary: Cryptographic modules for Python.
+  description: |
+    pycrpto, the Python Cryptography Toolkit, is a collection of cryptographic
+    modules implementing various algorithms and protocols.
+  doc_url: https://www.dlitz.net/software/pycrypto/api/current/
+  doc_source_url: https://github.com/dlitz/pycrypto/tree/master/Doc
+  dev_url: https://github.com/dlitz/pycrypto
 
 extra:
   recipe-maintainers:
     - jakirkham
+    - jjhelmus
+    - mingwandroid

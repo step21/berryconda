@@ -1,21 +1,23 @@
 {% set name = "conda-build" %}
-{% set version = "3.12.1" %}
-{% set sha256 = "8783700aa00b1b19d49d31013af51765d7b4ed148adac82c3c1326ac30c0ed4d" %}
+{% set version = "3.19.2" %}
+{% set sha256 = "3f2126cce588dd09d9f84964294d389e4699ce8a34592d031f43da471f98ce31" %}
 
 package:
   name: {{ name }}
   version: {{ version }}
 
 source:
-  fn: {{ name}}-{{ version }}.tar.gz
-  url: https://github.com/conda/{{ name }}/archive/{{ version }}.tar.gz
+  url: https://github.com/conda/{{ name }}/releases/download/{{ version }}/{{ name }}-{{ version }}.tar.gz
   sha256: {{ sha256 }}
+  patches:
+    - gh3606.patch
 
 build:
   number: 0
   entry_points:
     - conda-build = conda_build.cli.main_build:main
     - conda-convert = conda_build.cli.main_convert:main
+    - conda-debug = conda_build.cli.main_debug:main
     - conda-develop = conda_build.cli.main_develop:main
     - conda-index = conda_build.cli.main_index:main
     - conda-inspect = conda_build.cli.main_inspect:main
@@ -27,24 +29,32 @@ requirements:
   host:
     - python
     - pip
+    - conda-package-handling >=1.3
   run:
     - beautifulsoup4
     - chardet
-    - conda  >=4.3
+    - conda  >=4.5
     - contextlib2        # [py27]
     - enum34             # [py27]
     - filelock
     - futures            # [py27]
-    - glob2 >=0.6        # [py27]
     - jinja2
     - patchelf      # [linux]
     - pkginfo
     - psutil
     - python
+    - py-lief  # [not (win and py2k)]
     - pyyaml
+    - ripgrep
     - scandir            # [py27]
+    - setuptools
     - six
     - glob2 >=0.6
+    - pytz
+    - tqdm
+    - conda-package-handling >=1.3
+    - python-libarchive-c
+    - requests
 
   run_constrained:
     - conda-verify  >=3.1.0
@@ -54,7 +64,6 @@ test:
   # requires:
   #   - pytest
   #   - pytest-cov
-  #   - pytest-catchlog
   #   - pytest-xdist
   #   - pytest-env
 
@@ -74,6 +83,8 @@ test:
     - conda-convert -h
     - type -P conda-develop  # [unix]
     - where conda-develop  # [win]
+    - type -P conda-debug  # [unix]
+    - where conda-debug  # [win]
     - conda-develop -h
     - type -P conda-index  # [unix]
     - where conda-index  # [win]
@@ -99,7 +110,7 @@ test:
 about:
   home: https://github.com/conda/conda-build
   summary: tools for building conda packages
-  license: BSD 3-Clause
+  license: BSD-3-Clause
   license_family: BSD
   license_file: LICENSE.txt
   description: |

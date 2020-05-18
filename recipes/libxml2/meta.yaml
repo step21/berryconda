@@ -1,19 +1,18 @@
-{% set version = "2.9.8" %}
+{% set version = "2.9.10" %}
 
 package:
   name: libxml2
   version: {{ version }}
 
 source:
-  url: ftp://xmlsoft.org/libxml2/libxml2-{{ version }}.tar.gz
-  sha256: 0b74e51595654f958148759cfef0993114ddccccbb6f31aee018f3558e8e2732
+  url: http://xmlsoft.org/sources/libxml2-{{ version }}.tar.gz
+  sha256: aafee193ffb8fe0c82d4afef6ef91972cbaf5feea100edc2f262750611b4be1f
   patches:
-    # Some C99 that vs2008 can't cope with
-    - 0001-C89-for-VS2008.patch
+    - 0002-Make-and-install-a-pkg-config-file-on-Windows.patch
     - 0004-CVE-2017-8872.patch
 
 build:
-  number: 3
+  number: 0
   run_exports:
     # remove symbols at minor versions.
     #    https://abi-laboratory.pro/tracker/timeline/libxml2/
@@ -27,6 +26,7 @@ requirements:
     - libtool  # [not win]
     - pkg-config  # [not win]
     - make  # [not win]
+    - m2-patch  # [win]
   host:
     - icu  # [not win]
     - libiconv
@@ -43,8 +43,6 @@ test:
     - test.xml
   commands:
     - xmllint test.xml
-    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
-    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
 
 about:
   home: http://xmlsoft.org/

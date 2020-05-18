@@ -1,4 +1,4 @@
-From 1c8b91d8a3fac9a0e0d074bc751c58e985f3e6c8 Mon Sep 17 00:00:00 2001
+From cd5d122b364d4a4e719d2da200b73c87fcb507cf Mon Sep 17 00:00:00 2001
 From: Jonathan Helmus <jjhelmus@gmail.com>
 Date: Mon, 30 Jul 2018 16:33:26 -0500
 Subject: [PATCH 2/2] disable downloads inside conda build
@@ -8,10 +8,10 @@ Subject: [PATCH 2/2] disable downloads inside conda build
  1 file changed, 4 insertions(+)
 
 diff --git a/setuptools/package_index.py b/setuptools/package_index.py
-index cda54b7..67e0ea1 100755
+index 6b06f2c..ed7aab7 100644
 --- a/setuptools/package_index.py
 +++ b/setuptools/package_index.py
-@@ -320,6 +320,10 @@ class PackageIndex(Environment):
+@@ -321,6 +321,10 @@ class PackageIndex(Environment):
  
      def process_url(self, url, retrieve=False):
          """Evaluate a URL as a possible download, and maybe retrieve it"""
@@ -23,5 +23,5 @@ index cda54b7..67e0ea1 100755
              return
          self.scanned_urls[url] = True
 -- 
-2.7.4
+2.17.1
 

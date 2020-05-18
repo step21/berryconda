@@ -1,0 +1,72 @@
+{% set version = "1.28.1" %}
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-hexbin
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/hexbin_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/hexbin/hexbin_{{ version }}.tar.gz
+  sha256: 42d092c709ebc84b18df8121beb6bd1d8a3f6f357afd5c3490757c4c4795c6e7
+
+build:
+  merge_build_host: True  # [win]
+  number: 0
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+requirements:
+  build:
+    - {{ compiler('c') }}        # [not win]
+    - {{ compiler('fortran') }}  # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ compiler('m2w64_fortran') }}        # [win]
+    - {{posix}}filesystem        # [win]
+    - {{posix}}make
+    - {{posix}}sed               # [win]
+    - {{posix}}coreutils         # [win]
+    - {{posix}}zip               # [win]
+  host:
+    - r-base
+    - r-lattice
+  run:
+    - r-base
+    - {{native}}gcc-libs         # [win]
+    - r-lattice
+
+test:
+  commands:
+    - $R -e "library('hexbin')"           # [not win]
+    - "\"%R%\" -e \"library('hexbin')\""  # [win]
+
+about:
+  home: http://github.com/edzer/hexbin
+  license: GPL-2
+  summary: Binning and plotting functions for hexagonal bins.
+  license_family: GPL2
+  license_file: '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+
+extra:
+  recipe-maintainers:
+    - conda-forge/r
+
+# Package: hexbin
+# Version: 1.27.3
+# Title: Hexagonal Binning Routines
+# Author: Dan Carr <dcarr@voxel.galaxy.gmu.edu>, ported by Nicholas Lewin-Koh and Martin Maechler <maechler@stat.math.ethz.ch>, contains copies of lattice functions written by Deepayan Sarkar  <deepayan.sarkar@r-project.org>
+# Maintainer: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+# Depends: R (>= 2.0.1), methods
+# Imports: lattice, grid, graphics, grDevices, stats, utils
+# Suggests: marray, affy, Biobase, limma
+# Description: Binning and plotting functions for hexagonal bins.
+# Collate: lattice.R BTC.R BTY.R grid.hexagons.R grid.hexlegend.R hbox.R hdiffplot.R hexbinList.R hexbinplot.R hexbin.s4.R hexpanel.R hexplom.R hexPlotMA.R hexutil.R hexViewport.R HO.R LINGRAY.R LOCS.R MAG.R RB.R smoothHexbin.R
+# License: GPL-2
+# NeedsCompilation: yes
+# URL: http://github.com/edzer/hexbin
+# Packaged: 2019-05-14 13:56:49 UTC; edzer
+# Repository: CRAN
+# Date/Publication: 2019-05-14 14:50:03 UTC

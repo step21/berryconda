@@ -1,0 +1,14 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d0285be0..52e2ee58 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -592,9 +592,6 @@ check_include_file(OpenGL/glu.h HAVE_OPENGL_GLU_H)
+ 
+ # Win32 IO
+ set(win32_io FALSE)
+-if(WIN32)
+-  set(win32_io TRUE)
+-endif()
+ 
+ set(USE_WIN32_FILEIO ${win32_io})
+ 

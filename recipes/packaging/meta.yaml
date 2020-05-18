@@ -1,4 +1,4 @@
-{% set version = "17.1" %}
+{% set version = "20.1" %}
 
 package:
   name: packaging
@@ -6,23 +6,21 @@ package:
 
 source:
   url: https://pypi.io/packages/source/p/packaging/packaging-{{ version }}.tar.gz
-  sha256: f019b770dd64e585a99714f1fd5e01c7a8f11b45635aa953fd41c689a657375b
+  sha256: e665345f9eef0c621aa0bf2f8d78cf6d21904eef16a93f020240b704a57f1334
 
 build:
   number: 0
   noarch: python
-  script: python -m pip install --no-deps --ignore-installed .
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 requirements:
   build:
     - python
     - pip
-    - pyparsing
-    - six
 
   run:
     - python
-    - pyparsing
+    - pyparsing >=2.0.2
     - six
 
 test:

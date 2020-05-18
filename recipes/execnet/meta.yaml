@@ -1,7 +1,7 @@
 {% set name = "execnet" %}
-{% set version = "1.5.0" %}
+{% set version = "1.7.1" %}
 {% set hash_type = "sha256" %}
-{% set hash = "a7a84d5fa07a089186a329528f127c9d73b9de57f1a1131b82bb5320ee651f6a" %}
+{% set hash = "cacb9df31c9680ec5f95553976c4da484d407e85e41c83cb812aa014f0eddc50" %}
 
 package:
   name: {{ name }}
@@ -14,11 +14,12 @@ source:
 
 build:
   number: 0
-  script: python setup.py install --single-version-externally-managed --record=record.txt
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
   noarch: python
 
 requirements:
   build:
+    - pip
     - python
     - setuptools
     - setuptools_scm

@@ -1,7 +1,6 @@
 #!/bin/bash
 
-
-$PYTHON -m pip install --no-deps --ignore-installed .
+$PYTHON -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
 
 # Remove versioned entrypoints.
 PY_VER_MAJ=$($PYTHON -c "import os; print('_'.join(os.environ['PY_VER'].split('.')[0]))")

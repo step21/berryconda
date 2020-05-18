@@ -1,27 +1,26 @@
 {% set name = "bitarray" %}
-{% set version = "0.8.3" %}
-{% set sha256 = "050cd30b810ddb3aa941e7ddfbe0d8065e793012d0a88cb5739ec23624b9895e" %}
+{% set version = "1.2.1" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: {{ sha256 }}
+  sha256: 2ed675f460bb0d3d66fd8042a6f1f0d36cf213e52e72a745283ddb245da7b9cf
+  patches:
+    - 0001-Determine-64-bitness-of-interpreter-in-a-cross-platf.patch
 
 build:
-  number: 0
-  script: python setup.py install
+  number: 1
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
   build:
     - {{ compiler('c') }}
   host:
     - python
-    - setuptools
-
+    - pip
   run:
     - python
 
@@ -32,8 +31,7 @@ test:
 about:
   home: https://github.com/ilanschnell/bitarray
   license: PSF
-  # https://github.com/ilanschnell/bitarray/issues
-  # license_file: LICENSE
+  license_file: LICENSE
   summary: 'efficient arrays of booleans -- C extension'
   description: |
     Bitarray provides an object type which efficiently represents an array of

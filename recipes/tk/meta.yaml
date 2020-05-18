@@ -1,4 +1,4 @@
-{% set version = "8.6.8" %}
+{% set version = "8.6.10" %}
 {% set maj_min = ".".join(version.split(".")[:2]) %}
 
 package:
@@ -8,13 +8,10 @@ package:
 source:
   - url: https://downloads.sourceforge.net/tcl/tcl{{ version }}-src.tar.gz
     folder: tcl{{ version }}
-    sha256: c43cb0c1518ce42b00e7c8f6eaddd5195c53a98f94adc717234a65cbcfd3f96a
+    sha256: 5196dbf6638e3df8d5c87b5815c8c2b758496eb6f0e41446596c9a4e638d87ed
   - url: https://downloads.sourceforge.net/tcl/tk{{ version }}-src.tar.gz
     folder: tk{{ version }}
-    sha256: 49e7bca08dde95195a27f594f7c850b088be357a7c7096e44e1158c7a5fd7b33
-    patches:
-      # https://trac.macports.org/ticket/55649
-      - patch-macosx-tkMacOSXXStubs.c.diff  # [osx]
+    sha256: 63df418a859d0a463347f95ded5cd88a3dd3aaa1ceecaeee362194bc30f3e386
 
 build:
   number: 0
@@ -26,6 +23,10 @@ build:
 requirements:
   build:
     - {{ compiler('c') }}
+    - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+    - {{ cdt('libx11-devel') }}          # [linux]
+    - {{ cdt('libxcb') }}                # [linux]
+    - {{ cdt('libxau') }}                # [linux]
     - make                               # [linux]
   host:
     - zlib  # [unix]
@@ -81,17 +82,15 @@ test:
     - tclsh hello.tcl
     - tclsh{{ maj_min }} hello.tcl                       # [unix]
     - tclsh{{ maj_min.replace(".", "") }} hello.tcl      # [win]
-    # wish requires X11:
-    # wish: error while loading shared libraries: libX11.so.6: cannot open shared object file: No such file or directory
-    # The time has come to figure out how to handle missing system dependencies. cc @msarahan
-    # - wish hello.tcl
-    # - wish{{ maj_min }} hello.tcl                      # [unix]
+    - wish hello.tcl
+    - wish{{ maj_min }} hello.tcl                        # [unix]
     - wish{{ maj_min.replace(".", "") }}t hello.tcl      # [win]
 
 about:
   home: http://www.tcl.tk/
   license: Tcl/Tk
   license_family: BSD
+  license_file: tcl{{ version }}/license.terms
   summary: A dynamic programming language with GUI support.  Bundles Tcl and Tk.
 
 extra:
@@ -100,4 +99,5 @@ extra:
     - jjhelmus
     - msarahan
     - pelson
+    - ocefpaf
     - mingwandroid

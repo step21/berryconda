@@ -1,18 +1,17 @@
-{% set name = "olefile" %}
-{% set version = "0.45.1" %}
+{% set version = "0.46" %}
 
 package:
-  name: {{ name|lower }}
+  name: olefile
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.zip
-  sha256: 2b6575f5290de8ab1086f8c5490591f7e0885af682c7c1793bdaf6e64078d385
+  url: https://pypi.io/packages/source/o/olefile/olefile-{{ version }}.zip
+  sha256: 133b031eaf8fd2c9399b78b8bc5b8fcbe4c31e85295749bb17a87cba8f3c3964
 
 build:
     noarch: python
-    number: 1
-    script: python -m pip install --no-deps --ignore-installed .
+    number: 0
+    script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
 
 requirements:
   host:

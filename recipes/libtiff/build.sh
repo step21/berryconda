@@ -15,7 +15,9 @@ fi
             --with-jpeg-include-dir="${PREFIX}/include" \
             --with-jpeg-lib-dir="${PREFIX}/lib" \
             --with-lzma-include-dir="${PREFIX}/include" \
-            --with-lzma-lib-dir="${PREFIX}/lib"
+            --with-lzma-lib-dir="${PREFIX}/lib" \
+            --with-zstd-include-dir="${PREFIX}/include" \
+            --with-zstd-lib-dir="${PREFIX}/lib"
 
 make -j${CPU_COUNT} ${VERBOSE_AT}
 eval ${LIBRARY_SEARCH_VAR}=$PREFIX/lib make check

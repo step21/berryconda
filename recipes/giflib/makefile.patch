@@ -1,0 +1,32 @@
+--- giflib-5.1.9.orig/Makefile	2019-03-28 15:57:23.000000000 -0300
++++ giflib-5.1.9/Makefile	2019-04-07 15:04:49.350018953 -0300
+@@ -14,7 +14,8 @@
+ TAR = tar
+ INSTALL = install
+ 
+-PREFIX = /usr/local
++# use conda PREFIX variable
++# PREFIX = /usr/local
+ BINDIR = $(PREFIX)/bin
+ INCDIR = $(PREFIX)/include
+ LIBDIR = $(PREFIX)/lib
+@@ -22,7 +23,8 @@
+ 
+ # No user-serviceable parts below this line
+ 
+-VERSION:=$(shell ./getversion)
++# use conda env var for version
++# VERSION=$(shell getversion)
+ LIBMAJOR=7
+ LIBMINOR=1
+ LIBPOINT=0
+@@ -63,7 +65,8 @@
+ LDLIBS=libgif.a -lm
+ 
+ all: libgif.so libgif.a libutil.so libutil.a $(UTILS)
+-	$(MAKE) -C doc
++	# don't build the docs b/c it requires xmlto
++	# $(MAKE) -C doc
+ 
+ $(UTILS):: libgif.a libutil.a
+ 

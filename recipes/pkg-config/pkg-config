@@ -32,18 +32,20 @@ function _run_pkg_config() {
     # get precedence over PREFIX (pkg_config_pc_path). We never want that.
     # Instead pass PKG_CONFIG_LIBDIR as PC_PATH:SYSROOT and allow the user
     # to take precedence over all that iff PKG_CONFIG_PATH is set.
-    if [[ ${HOST} =~ .*x86_64.* ]]; then
-      SRLIBDIR=lib64
+    if [[ ${HOST} =~ .*x86_64.* ]] || [[ ${HOST} =~ .*powerpc64le.* ]] || [[ ${HOST} =~ .*aarch64.* ]]; then
+      SRLIBDIR=":$(${CC} -print-sysroot)/usr/lib/pkgconfig"
+      SRLIBDIR64=":$(${CC} -print-sysroot)/usr/lib64/pkgconfig"
     else
-      SRLIBDIR=lib
+      SRLIBDIR=":$(${CC} -print-sysroot)/usr/lib/pkgconfig"
+      SRLIBDIR64=
     fi
     if [[ ${CONDA_BUILD_PKG_CONFIG_LOG} == yes ]]; then
-      echo "Calling: PKG_CONFIG_LIBDIR=${PC_PATH_HOST}:$(${CC} -print-sysroot)/usr/share/pkgconfig:$(${CC} -print-sysroot)/usr/${SRLIBDIR}/pkgconfig \
+      echo "Calling: PKG_CONFIG_LIBDIR=${PC_PATH_HOST}:$(${CC} -print-sysroot)/usr/share/pkgconfig${SRLIBDIR}${SRLIBDIR64} \
         ${PC_PREFIX}/bin/pkg-config.bin --define-prefix --debug "$@" > /tmp/pkg-config-$$.log"
-      PKG_CONFIG_LIBDIR="${PC_PATH_HOST}":"$(${CC} -print-sysroot)/usr/share/pkgconfig:$(${CC} -print-sysroot)/usr/${SRLIBDIR}/pkgconfig" \
+      PKG_CONFIG_LIBDIR="${PC_PATH_HOST}":"$(${CC} -print-sysroot)/usr/share/pkgconfig${SRLIBDIR}${SRLIBDIR64}" \
         ${PC_PREFIX}/bin/pkg-config.bin --define-prefix --debug "$@" >> /tmp/pkg-config-$$.log 2>&1 || true
     fi
-    PKG_CONFIG_LIBDIR="${PC_PATH_HOST}":"$(${CC} -print-sysroot)/usr/share/pkgconfig:$(${CC} -print-sysroot)/usr/${SRLIBDIR}/pkgconfig" \
+    PKG_CONFIG_LIBDIR="${PC_PATH_HOST}":"$(${CC} -print-sysroot)/usr/share/pkgconfig${SRLIBDIR}${SRLIBDIR64}" \
       ${PC_PREFIX}/bin/pkg-config.bin --define-prefix "$@"
   else
     # We might need --define-prefix here sometimes, but would be better off ensuring /usr is replaced by ${prefix}

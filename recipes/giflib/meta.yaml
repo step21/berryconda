@@ -1,18 +1,20 @@
-{% set version = "5.1.4" %}
+{% set version = "5.2.1" %}
 
 package:
   name: giflib
   version: {{ version }}
 
 source:
-  url: http://downloads.sourceforge.net/project/giflib/giflib-{{ version }}.tar.gz
-  sha256: 34a7377ba834397db019e8eb122e551a49c98f49df75ec3fcc92b9a794a4f6d1
+  - url: http://downloads.sourceforge.net/project/giflib/giflib-{{ version }}.tar.gz
+    sha256: 31da5562f44c5f15d63340a09a4fd62b48c45620cd302f77a6d9acf0077879bd
+    patches:
+      - fix_win.patch  # [win]
+  # add a getopt polyfill
+  - path: getopt.h  # [win]
 
 build:
-  number: 1
-  # the sln file from the URL below is gone :-/
-  # http://www.chemformatter.com/build-with-visual-studio-2015/giflib/giflib-5.1.4-vs14.zip
-  skip: true  # [win]
+  number: 2
+  skip: true  # [win and vc<14]
   run_exports:
     # SONAME changes at minor revs.
     #    https://abi-laboratory.pro/tracker/timeline/giflib/
@@ -21,28 +23,24 @@ build:
 requirements:
   build:
     - {{ compiler('c') }}
+    - make  # [not win]
+    - git  # [win]
+    - cmake
 
 test:
   commands:
-    - gif2rgb -h  # [not win]
-    - gifbuild -h  # [not win]
-    - gifclrmp -h  # [not win]
-    - gifecho -h  # [not win]
-    - giffix -h  # [not win]
-    - gifinto -h  # [not win]
-    - giftext -h  # [not win]
-    - gif2rgb.exe -h  # [win]
-    - gifbuild.exe -h  # [win]
-    - gifclrmp.exe -h  # [win]
-    - gifecho.exe -h  # [win]
-    - giffix.exe -h  # [win]
-    - gifinto.exe -h  # [win]
-    - giftext.exe -h  # [win]
+    - gif2rgb -h
+    - gifbuild -h
+    - giffix -h
+    - giftext -h
+    - gifclrmp -h
 
 about:
   home: http://giflib.sourceforge.net
   license: MIT
-  license_file: COPYING
+  license_file:
+    - COPYING
+    - getopt_LICENSE.txt  # [win]
   summary: Library for reading and writing gif images
 
 extra:
@@ -50,3 +48,5 @@ extra:
     - ocefpaf
     - 183amir
     - msarahan
+    - isuruf
+    - wolfv

@@ -1,4 +1,4 @@
-{% set version = "2.6.6" %}
+{% set version = "2.7.1" %}
 
 package:
   name: numexpr
@@ -6,29 +6,30 @@ package:
 
 source:
   url: https://pypi.io/packages/source/n/numexpr/numexpr-{{ version }}.tar.gz
-  sha256: 97c1f7fa409439ae933494014cd41d43de84cfe6c98b7f93392f94d54de1b453
+  sha256: b0d239d9827e1bcee08344fd05835823bc60aff97232e35a928214d03ff802b1
 
 build:
-  number: 0
-  script: python -m pip install --no-deps --ignore-installed .
+  number: 1
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
   build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
     - python
     - pip
-    - numpy 1.11.*
+    - numpy  # [not win]
+    - numpy 1.14.*  # [win]
   run:
     - python
     - setuptools
-    - numpy >=1.11
+    - {{ pin_compatible('numpy') }}
 
 test:
   imports:
     - numexpr
     - numexpr.interpreter
-  commands:
-    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
-    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
 
 about:
   home: https://github.com/pydata/numexpr
@@ -48,3 +49,4 @@ extra:
     - ocefpaf
     - scopatz
     - djkirkham
+    - jjhelmus

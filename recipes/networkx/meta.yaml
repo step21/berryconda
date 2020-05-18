@@ -1,29 +1,27 @@
-{% set name = "networkx" %}
-{% set version = "2.1" %}
-{% set sha256 = "64272ca418972b70a196cb15d9c85a5a6041f09a2f32e0d30c0255f25d458bb1" %}
+{% set version = "2.4" %}
 
 package:
-  name: {{ name|lower }}
+  name: networkx
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.zip
-  sha256: {{ sha256 }}
+  url: https://pypi.io/packages/source/n/networkx/networkx-{{ version }}.tar.gz
+  sha256: f8f4ff0b6f96e4f9b16af6b84622597b5334bf9cae8cf9b2e42e7985d5c95c64
 
 build:
-  noarch: python
   number: 1
-  script: python -m pip install --no-deps --ignore-installed .
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
   host:
-    - python
+    - python >=3.5
     - pip
 
   run:
-    - python
+    - python >=3.5
     - setuptools
-    - decorator >=3.4.0
+    - decorator >=4.3.0
 
 test:
   imports:
@@ -41,6 +39,7 @@ test:
     - networkx.algorithms.flow
     - networkx.algorithms.isomorphism
     - networkx.algorithms.link_analysis
+    - networkx.algorithms.node_classification
     - networkx.algorithms.operators
     - networkx.algorithms.shortest_paths
     - networkx.algorithms.traversal
@@ -51,16 +50,11 @@ test:
     - networkx.linalg
     - networkx.readwrite
     - networkx.readwrite.json_graph
-    - networkx.testing
-    - networkx.tests
     - networkx.utils
-
-  requires:
-    - nose >=0.10.1
 
 about:
   home: https://networkx.github.io/
-  license: BSD 3-Clause
+  license: BSD-3-Clause
   license_file: LICENSE.txt
   license_family: BSD
   summary: Python package for creating and manipulating complex networks
@@ -69,9 +63,10 @@ about:
     manipulation, and study of the structure, dynamics, and functions of complex
     networks.
   doc_url: http://networkx.github.io/documentation.html
-  dev_url: https://github.com/networkx
+  dev_url: https://github.com/networkx/networkx
 
 extra:
   recipe-maintainers:
     - synapticarbors
     - ocefpaf
+    - SylvainCorlay

@@ -1,33 +1,29 @@
-{%set name = "linecache2" %}
-{%set version = "1.0.0" %}
-{%set hash_type = "sha256" %}
-{%set hash_val = "4b26ff4e7110db76eeb6f5a7b64a82623839d595c2038eeda662f2a2db78e97c" %}
+{% set version = "1.0.0" %}
 
 package:
-  name: {{ name }}
+  name: linecache2
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  {{ hash_type }}: {{ hash_val }}
+  url: https://pypi.io/packages/source/l/linecache2/linecache2-{{ version }}.tar.gz
+  sha256: 4b26ff4e7110db76eeb6f5a7b64a82623839d595c2038eeda662f2a2db78e97c
 
 build:
-  number: 0
-  script: python setup.py install --single-version-externally-managed --record=record.txt
+  number: 1
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
 
 requirements:
-  build:
+  host:
     - python
-    - setuptools
+    - pip
     - pbr
-
   run:
     - python
 
 test:
   imports:
-    - {{ name }}
+    - linecache2
 
 about:
   home: https://github.com/testing-cabal/linecache2

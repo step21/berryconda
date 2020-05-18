@@ -1,4 +1,4 @@
-{% set version = "1.8.0" %}
+{% set version = "1.8.2" %}
 
 package:
   name: libssh2
@@ -6,18 +6,23 @@ package:
 
 source:
   url: https://www.libssh2.org/download/libssh2-{{ version }}.tar.gz
-  sha256: 39f34e2f6835f4b992cafe8625073a88e5a28ba78f83e8099610a7b3af4676d4
+  sha256: 088307d9f6b6c4b8c13f34602e8ff65d21c2dc4d55284dfe15d502c4ee190d67
 
 build:
   number: 2
+  run_exports:
+    - {{ pin_subpackage('libssh2') }}
 
 requirements:
   build:
     - {{ compiler('c') }}
+    - make   # [unix]
+    - openssl 1.0         # [aarch64]            
+    - cmake_nosystemcurl  # [aarch64]
   host:
     # This breals a dependency cycle:
     # curl->libssh2->cmake->curl
-    - cmake-binary
+    - cmake-binary        # [not aarch64]
     - openssl
     - zlib
   run:
@@ -31,19 +36,16 @@ test:
     - test -f $PREFIX/include/libssh2_sftp.h         # [not win]
 
     - test -f $PREFIX/lib/libssh2.a                  # [not win]
-    - test -f $PREFIX/lib/libssh2.so                 # [linux]
-    - test -f $PREFIX/lib/libssh2.dylib              # [osx]
+    - test -f $PREFIX/lib/libssh2${SHLIB_EXT}  # [not win]
 
     - if not exist %LIBRARY_INC%\\libssh2.h           exit 1  # [win]
     - if not exist %LIBRARY_INC%\\libssh2_publickey.h exit 1  # [win]
     - if not exist %LIBRARY_INC%\\libssh2_sftp.h      exit 1  # [win]
     - if not exist %LIBRARY_LIB%\\libssh2.lib         exit 1  # [win]
-    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
-    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
 
 about:
   home: https://www.libssh2.org/
-  license: BSD 3-Clause
+  license: BSD-3-Clause
   license_family: BSD
   license_file: COPYING
   summary: 'the SSH library'

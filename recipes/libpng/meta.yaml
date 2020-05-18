@@ -1,4 +1,4 @@
-{% set version = "1.6.35" %}
+{% set version = "1.6.37" %}
 
 package:
   name: libpng
@@ -6,17 +6,24 @@ package:
 
 source:
   url: http://download.sourceforge.net/libpng/libpng-{{ version }}.tar.gz
-  sha256: 2b82ab3e996803b80bc73206857e826a155d3ebb374e8eb03a87a63c6f672cf7
+  sha256: daeb2620d829575513e35fecc83f0d3791a620b9b93d800b763542ece9390fb4
+  patches:
+    - 0001-Include-pkg-config-files-in-the-Windows-packages-too.patch
+    - libpng-arm-free.patch  # [aarch64]
 
 build:
   number: 1
+  skip: true  # [win and vc<14]
   run_exports:
     # SO name changes at minor rev bumps.
     - {{ pin_subpackage('libpng', max_pin='x.x') }}
 
 requirements:
   build:
+    - make  # [unix]
     - cmake  # [win]
+    - m2-patch  # [win]
+    - ninja  # [win]
     - libtool  # [not win]
     - automake  # [not win]
     - {{ compiler('c') }}
@@ -30,8 +37,6 @@ test:
     - test -f ${PREFIX}/lib/libpng.a  # [not win]
     - test -f ${PREFIX}/lib/libpng${SHLIB_EXT}  # [not win]
     - libpng-config --version  # [not win]
-    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
-    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
 
 about:
   home: http://www.libpng.org/pub/png/libpng.html
@@ -49,3 +54,4 @@ extra:
   recipe-maintainers:
     - ocefpaf
     - msarahan
+    - pkgw

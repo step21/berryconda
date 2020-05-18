@@ -1,15 +1,37 @@
-{% set version = "1.4.1" %}
+{% set version = "1.5.3" %}
+{% set build = 4 %}
+
+# recipe-lint fails if mpi is undefined
+{% set mpi = mpi or 'nompi' %}
+{% if mpi == "nompi" %}
+# prioritize nompi via build number
+{% set build = build + 100 %}
+{% endif %}
 
 package:
   name: netcdf4
   version: {{ version }}
 
 source:
-  url: https://github.com/Unidata/netcdf4-python/archive/v{{ version }}rel.tar.gz
-  sha256: b42d50220387f16e20b42e2e6f6f5d2cb62ba8edc2787618db677c40ba7b1bf4
+  url: https://pypi.io/packages/source/n/netCDF4/netCDF4-{{ version }}.tar.gz
+  sha256: 2a3ca855848f4bbf07fac366da77a681fcead18c0a8813d91d46302f562dc3be
 
 build:
-  number: 0
+  skip: True  # [(win and vc<14) or (win and mpi != 'nompi')]
+  number: {{ build }}
+
+  # add build string so packages can depend on
+  # mpi or nompi variants explicitly:
+  # `netcdf4 * mpi_mpich_*` for mpich
+  # `netcdf4 * mpi_*` for any mpi
+  # `netcdf4 * nompi_*` for no mpi
+
+  {% if mpi != 'nompi' %}
+  {% set mpi_prefix = "mpi_" + mpi %}
+  {% else %}
+  {% set mpi_prefix = "nompi" %}
+  {% endif %}
+  string: "{{ mpi_prefix }}_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ build }}"
   entry_points:
     - ncinfo = netCDF4.utils:ncinfo
     - nc4tonc3 = netCDF4.utils:nc4tonc3
@@ -23,18 +45,29 @@ requirements:
     - pip
     - numpy
     - cython >=0.19
-    - cftime
+    - cftime >=1.0.1
+    # need to list hdf5 and libnetcdf twice to get version pinning from conda_build_config
+    # and build pinning from {{ mpi_prefix }}
     - hdf5
+    - hdf5 * {{ mpi_prefix }}_*
     - libnetcdf
+    - libnetcdf * {{ mpi_prefix }}_*
+    - {{ mpi }}  # [mpi != 'nompi']
+    - mpi4py  # [mpi != 'nompi']
   run:
     - python
     - setuptools
     - {{ pin_compatible('numpy') }}
     - cftime
-    - hdf5
-    - libnetcdf
+    - hdf5 * {{ mpi_prefix }}_*
+    - libnetcdf * {{ mpi_prefix }}_*
+    - {{ mpi }}  # [mpi != 'nompi']
+    - mpi4py  # [mpi != 'nompi']
+    - openssh  # [mpi == 'openmpi']
 
 test:
+  files:
+    - parallel_test.py  # [mpi != 'nompi']
   imports:
     - netCDF4
     - cftime
@@ -42,12 +75,14 @@ test:
     - ncinfo -h
     - nc4tonc3 -h
     - nc3tonc4 -h
+    - mpirun -np 4 python parallel_test.py  # [mpi == 'mpich']
+    - mpirun --oversubscribe -np 4 python parallel_test.py  # [mpi == 'openmpi']
 
 about:
   home: http://github.com/Unidata/netcdf4-python
   license: OSI Approved and MIT
   license_file: COPYING
-  summary: 'Provides an object-oriented python interface to the netCDF version 4 library.'
+  summary: 'Provides an object-oriented python interface to the netCDF version 4 library'
   dev_url: https://github.com/Unidata/netcdf4-python
   doc_url: https://unidata.github.io/netcdf4-python
 
@@ -56,3 +91,4 @@ extra:
     - ocefpaf
     - pelson
     - dopplershift
+    - xylar

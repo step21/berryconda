@@ -1,19 +1,19 @@
 #!/bin/bash
 
+# The compiler flags interfere with th build and we need to overide them :-/
 if [[ $(uname) == Darwin ]]; then
-  export DYLD_FALLBACK_LIBRARY_PATH=$PREFIX/lib
-fi
+  unset CPPFLAGS
+  export CPPFLAGS="-Wl,-rpath,$PREFIX/lib -I${PREFIX}/include"
 
-export CXXFLAGS="${CFLAGS}"
-export LDFLAGS="-L${PREFIX}/lib ${LDFLAGS}"
-export CFLAGS="${CFLAGS} -pipe -O2 -fPIC -I${PREFIX}/include"
+  unset LDFLAGS
+  export LDFLAGS="-L$PREFIX/lib -Wl,-rpath,$PREFIX/lib -headerpad_max_install_names"
+fi
 
 autoreconf -vfi
 
-chmod +x configure
-
 # The --enable-silent-rules is needed because Travis CI dies on the long output from this build.
 ./configure --prefix=${PREFIX}\
+            --host=$HOST \
             --enable-linux-lfs \
             --enable-silent-rules \
             --enable-shared \
@@ -24,8 +24,14 @@ chmod +x configure
             --disable-fortran
 
 make
+
+# ncgen segfaults on macOS
+if [[ $(uname) != Darwin ]]; then
 make check
+fi
+
 make install
+
 
 # Remove man pages.
 rm -rf ${PREFIX}/share
@@ -36,6 +42,3 @@ mv ${PREFIX}/bin/ncgen ${PREFIX}/bin/h4_ncgen
 
 # People usually Google these.
 rm -rf ${PREFIX}/examples
-
-# We can remove this when we start using the new conda-build.
-find $PREFIX -name '*.la' -delete

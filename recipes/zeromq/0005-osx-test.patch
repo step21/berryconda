@@ -2,7 +2,7 @@ diff --git a/Makefile.am b/Makefile.am
 index fc9fd30..e3b0966 100644
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -357,7 +357,6 @@ endif
+@@ -389,7 +389,6 @@ endif
  #
  test_apps = \
  	tests/test_ancillaries \
@@ -10,7 +10,7 @@ index fc9fd30..e3b0966 100644
  	tests/test_pair_inproc \
  	tests/test_pair_tcp \
  	tests/test_reqrep_inproc \
-@@ -686,7 +685,6 @@ endif
+@@ -812,7 +811,6 @@ endif
  if !ON_MINGW
  if !ON_CYGWIN
  test_apps += \

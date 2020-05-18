@@ -1,4 +1,4 @@
-{% set version = "0.23.4" %}
+{% set version = "1.0.3" %}
 
 package:
   name: pandas
@@ -7,11 +7,12 @@ package:
 source:
   url: https://pypi.io/packages/source/p/pandas/pandas-{{ version }}.tar.gz
   url: https://github.com/pandas-dev/pandas/releases/download/v{{ version }}/pandas-{{ version }}.tar.gz
-  sha256: 5b24ca47acf69222e82530e89111dd9d14f9b970ab2cd3a1c2c78f0c4fbba4f4
+  sha256: 32f42e322fb903d0e189a4c10b75ba70d90958cc4f66a1781ed027f1a1d14586
 
 build:
-  number: 0
-  script: python -m pip install --no-deps --ignore-installed .
+  number: 1
+  script: {{ PYTHON }} -m pip install --no-deps --ignore-installed .
+  skip: True  # [py2k]
 
 requirements:
   build:
@@ -20,13 +21,13 @@ requirements:
   host:
     - python
     - pip
-    - cython
+    - cython >=0.28.2
     - numpy
   run:
     - python
     - {{ pin_compatible('numpy') }}
-    - python-dateutil >=2.5.*
-    - pytz
+    - python-dateutil >=2.6.1
+    - pytz >=2017.2
 
 test:
   imports:
@@ -34,7 +35,7 @@ test:
 
 about:
   home: http://pandas.pydata.org
-  license: BSD 3-clause
+  license: BSD-3-Clause
   license_file: LICENSE
   summary: 'High-performance, easy-to-use data structures and data analysis tools.'
 
@@ -45,3 +46,4 @@ extra:
     - msarahan
     - ocefpaf
     - TomAugspurger
+    - WillAyd

@@ -1,4 +1,4 @@
-{% set version = "3.1.1a1" %}
+{% set version = "3.1.5" %}
 
 package:
   name: pyopengl
@@ -7,12 +7,12 @@ package:
 source:
   fn: PyOpenGL-{{ version }}.tar.gz
   url: https://pypi.python.org/packages/source/P/PyOpenGL/PyOpenGL-{{ version }}.tar.gz
-  sha256: c96d909b359abe3271b746bacf7e6ba52935141e2406a8f90231e4e44dfa4075
+  sha256: 4107ba0d0390da5766a08c242cf0cf3404c377ed293c5f6d701e457c57ba3424
 
 build:
   noarch: python
-  script: python -m pip install --no-deps --ignore-installed .
-  number: 1
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  number: 0
 
 requirements:
   host:

@@ -1,0 +1,25 @@
+From: Sebastian Ramacher <s.ramacher@gmx.at>
+Date: Mon, 16 Apr 2018 01:02:08 +0200
+Subject: fix build issues if built without optimization.
+
+If built with -O0 the call to size won't be inlined and thus _fastmath cannot
+be loaded due to an unresolved symbol.
+Last-Update: 2011-11-16
+Forwarded: http://lists.dlitz.net/pipermail/pycrypto/2011q4/000514.html
+---
+ src/_fastmath.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/_fastmath.c b/src/_fastmath.c
+index b8b24b6..fe76522 100644
+--- a/src/_fastmath.c
++++ b/src/_fastmath.c
+@@ -1109,7 +1109,7 @@ cleanup:
+ 
+ 
+ 
+-INLINE size_t size (mpz_t n)
++static INLINE size_t size (mpz_t n)
+ {
+ 	return mpz_sizeinbase (n, 2);
+ }

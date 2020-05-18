@@ -2,15 +2,16 @@ mkdir build-%SUBDIR%-%c_compiler%
 cd build-%SUBDIR%-%c_compiler%
 
 :: Configure.
-cmake -G "%CMAKE_GENERATOR%"                    ^
+cmake -G Ninja                                  ^
       -D CMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX%  ^
       -D ZLIB_LIBRARY=%LIBRARY_LIB%\zlib.lib    ^
       -D ZLIB_INCLUDE_DIR=%LIBRARY_INC%         ^
       -DCMAKE_C_FLAGS="%CFLAGS% -DWIN32"        ^
+      -DCMAKE_BUILD_TYPE=Release                ^
       %SRC_DIR%
 if errorlevel 1 exit /b 1
 
-cmake --build . --target install --config Release
+cmake --build . --target install
 if errorlevel 1 exit /b 1
 
 :: Test.

@@ -1,4 +1,4 @@
-{% set version = "3.7.4" %}
+{% set version = "5.4.1" %}
 
 package:
   name: pytest
@@ -6,11 +6,12 @@ package:
 
 source:
   url: https://pypi.io/packages/source/p/pytest/pytest-{{ version }}.tar.gz
-  sha256: 2d7c49e931316cc7d1638a3e5f54f5d7b4e5225972b3c9838f3584788d27f349
+  sha256: 84dde37075b8805f3d1f392cc47e38a0e59518fb46a431cfdaf7cf1ce805f970
 
 build:
+  skip: true  # [py27]
   number: 0
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  script: {{ PYTHON }} setup.py install --single-version-externally-managed --record record.txt
   entry_points:
     - py.test = py.test:main
     - pytest = py.test:main
@@ -19,19 +20,25 @@ requirements:
   host:
     - pip
     - python
+    - setuptools >=40.0
     - setuptools_scm
   run:
-    - atomicwrites >=1.0
+    - atomicwrites >=1.0  # [win]
     - attrs >=17.4.0
     - colorama  # [win]
-    - funcsigs  # [py27]
+    - importlib_metadata >=0.12  # [py<38]
     - more-itertools >=4.0
-    - pathlib2  # [py<36]
-    - pluggy >=0.7
+    - packaging
+    - pathlib2 >=2.2.0  # [py<36]
+    - pluggy >=0.12,<1.0
     - py >=1.5.0
     - python
-    - setuptools
-    - six >=1.10.0
+    - setuptools >=40.0
+    - wcwidth
+  run_constrained:
+    # pytest-faulthandler 2 is a dummy package.
+    # if an older version of fault-handler is installed, it will conflict with pytest >=5.
+    - pytest-faulthandler >=2
 
 test:
   commands:
@@ -43,7 +50,7 @@ about:
   home: https://docs.pytest.org/en/latest/
   license: MIT
   license_file: LICENSE
-  summary: 'Simple and powerful testing with Python.'
+  summary: Simple and powerful testing with Python.
   description: |
     The pytest framework makes it easy to write small tests, yet scales to
     support complex functional testing for applications and libraries.

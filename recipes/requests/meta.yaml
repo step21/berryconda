@@ -1,4 +1,4 @@
-{% set version = "2.19.1" %}
+{% set version = "2.23.0" %}
 
 package:
   name: requests
@@ -6,11 +6,12 @@ package:
 
 source:
   url: https://pypi.io/packages/source/r/requests/requests-{{ version }}.tar.gz
-  sha256: ec22d826a36ed72a7358ff3fe56cbd4ba69dd7a6718ffd450ff0e9df7a47ce6a
+  sha256: b3f43d496c6daba4493e7c431722aeb7dbc6288f52a6e04e7b6023b0247817e6
 
 build:
-  number: 1
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  noarch: python
+  number: 2
+  script: "{{ PYTHON }} -m pip install . -vv"
 
 requirements:
   host:
@@ -18,20 +19,25 @@ requirements:
     - pip
   run:
     - python
-    - chardet >=3.0.2,<3.1.0
-    - idna >=2.5,<2.8
-    - urllib3 >=1.21.1,<1.24
+    - chardet >=3.0.2,<4
+    - idna >=2.5,<3
+    - urllib3 >=1.21.1,<1.26,!=1.25.0,!=1.25.1
     - certifi >=2017.4.17
 
 test:
+  requires:
+    - pip
+  commands:
+    - pip check
   imports:
     - requests
 
 about:
   home: http://python-requests.org
-  license: Apache 2.0
+  license: Apache-2.0
   license_file: LICENSE
-  summary: 'Python HTTP for Humans'
+  summary: 'Requests is an elegant and simple HTTP library for Python, built with ♥.'
+  dev_url: https://github.com/psf/requests
 
 extra:
   recipe-maintainers:
@@ -43,3 +49,4 @@ extra:
     - pelson
     - sigmavirus24
     - ocefpaf
+    - carlodri

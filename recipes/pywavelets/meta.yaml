@@ -1,16 +1,21 @@
-{% set version = "1.0.0" %}
+{% set name = "PyWavelets" %}
+{% set version = "1.1.1" %}
 
 package:
-  name: pywavelets
+  name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://github.com/PyWavelets/pywt/archive/v{{ version }}.tar.gz
-  sha256: 1696cbbbb74d670dda6bb75c0628fd1f82d98750661fcd9bd375082559252de8
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 1a64b40f6acb4ffbaccce0545d7fc641744f95351f62e4c6aaa40549326008c9
+  patches:
+    # Patch from PyWavelets/pywt#552 (ensure cython calls np.import_array)
+    - pr522.patch
 
 build:
-  number: 0
-  script: python -m pip install --no-deps --ignore-installed .
+  number: 1
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+  skip: True  # [py2k]
 
 requirements:
   build:
@@ -26,16 +31,15 @@ requirements:
 
 test:
   requires:
-    - nose
-  commands:
-    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
-    - conda inspect objects -p $PREFIX $PKG_NAME   # [osx]
+    - pytest
+  imports:
+    - pywt
 
 about:
   home: https://github.com/PyWavelets/pywt
   license: MIT
   license_file: LICENSE
-  summary: 'Discrete Wavelet Transforms in Python.'
+  summary: 'Discrete Wavelet Transforms in Python'
 
 extra:
   recipe-maintainers:

@@ -11,7 +11,7 @@ source:
     - win-rmentry.patch         # [win]
 
 build:
-  number: 2
+  number: 1004
   entry_points:
     - nosetests = nose:run_exit
 

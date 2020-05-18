@@ -13,7 +13,7 @@ pushd tcl${PKG_VERSION}/unix
                --host=${HOST}        \
                ${ARCH_FLAG}
   make -j${CPU_COUNT} ${VERBOSE_AT}
-  make install
+  make install install-private-headers
 popd
 
 pushd tk${PKG_VERSION}/unix
@@ -34,4 +34,4 @@ ln -s "${PREFIX}"/bin/tclsh${VER_ARR[0]}.${VER_ARR[1]} "${PREFIX}"/bin/tclsh
 ln -s "${PREFIX}"/bin/wish${VER_ARR[0]}.${VER_ARR[1]} "${PREFIX}"/bin/wish
 
 # copy headers
-cp "${SRC_DIR}"/tk${PKG_VERSION}/{unix,generic}/*.h "${PREFIX}"/include/
+cp "${SRC_DIR}"/tk${PKG_VERSION}/{unix,macosx,generic}/*.h "${PREFIX}"/include/

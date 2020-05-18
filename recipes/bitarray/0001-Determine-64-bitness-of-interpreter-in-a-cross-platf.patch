@@ -1,0 +1,35 @@
+From 3da80c422dd7c6e63a8782c802f061e58043d5e9 Mon Sep 17 00:00:00 2001
+From: Nehal J Wani <nehaljw.kkd1@gmail.com>
+Date: Sun, 22 Mar 2020 19:23:49 -0400
+Subject: [PATCH] Determine 64-bitness of interpreter in a cross-platform
+ fashion
+
+---
+ bitarray/test_bitarray.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/bitarray/test_bitarray.py b/bitarray/test_bitarray.py
+index 93eb5ab..eeb8c9e 100644
+--- a/bitarray/test_bitarray.py
++++ b/bitarray/test_bitarray.py
+@@ -30,7 +30,7 @@ else:
+ 
+ 
+ from bitarray import (bitarray, frozenbitarray,
+-                      bitdiff, bits2bytes, __version__)
++                      bitdiff, bits2bytes, _sysinfo, __version__)
+ 
+ 
+ tests = []
+@@ -735,7 +735,7 @@ class MiscTests(unittest.TestCase, Util):
+                 self.assertEQUAL(a, b)
+ 
+     def test_overflow(self):
+-        if tuple.__itemsize__ == 8:
++        if _sysinfo()[0] == 8:
+             return
+ 
+         self.assertRaises(OverflowError, bitarray.__new__,
+-- 
+2.21.1
+

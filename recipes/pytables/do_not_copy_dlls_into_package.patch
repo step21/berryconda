@@ -1,0 +1,17 @@
+diff --git a/setup.py b/setup.py
+index 5020d0a..1dfca70 100755
+--- a/setup.py
++++ b/setup.py
+@@ -817,12 +817,6 @@ if __name__ == '__main__':
+
+     name = find_name()
+
+-    if os.name == "nt":
+-        # Add DLL's to the final package for windows
+-        data_files.extend([
+-            ('Lib/site-packages/%s' % name, dll_files),
+-        ])
+-
+     ADDLIBS = [hdf5_package.library_name]
+
+     # List of Blosc file dependencies

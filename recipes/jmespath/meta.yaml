@@ -1,8 +1,7 @@
 {% set name = "jmespath" %}
-{% set version = "0.9.3" %}
+{% set version = "0.9.5" %}
 {% set bundle = "tar.gz" %}
-{% set hash_type = "sha256" %}
-{% set hash_val = "6a81d4c9aa62caf061cb517b4d9ad1dd300374cd4706997aff9cd6aedd61fc64" %}
+{% set hash_val = "cca55c8d153173e21baa59983015ad0daf603f9cb799904ff057bfb8ff8dc2d9" %}
 
 package:
   name: {{ name }}
@@ -11,12 +10,12 @@ package:
 source:
   fn: {{ name }}-{{ version }}.{{ bundle }}
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ bundle }}
-  {{ hash_type }}: {{ hash_val }}
+  sha256: {{ hash_val }}
 
 build:
   noarch: python
-  number: 1
-  script: python -m pip install --no-deps --ignore-installed .
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
 
 requirements:
   host:
@@ -36,9 +35,10 @@ about:
   license: MIT
   license_family: MIT
   license_file: LICENSE.txt
-  summary: 'JSON Matching Expressions'
+  summary: JSON Matching Expressions
   dev_url: https://github.com/jmespath/jmespath.py
-  
+
 extra:
   recipe-maintainers:
     - pmlandwehr
+    - xylar

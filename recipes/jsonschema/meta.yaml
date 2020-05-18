@@ -1,4 +1,4 @@
-{% set version = "2.6.0" %}
+{% set version = "3.2.0" %}
 
 package:
   name: jsonschema
@@ -6,10 +6,10 @@ package:
 
 source:
   url: https://pypi.io/packages/source/j/jsonschema/jsonschema-{{ version }}.tar.gz
-  sha256: 6ff5f3180870836cae40f06fa10419f557208175f13ad7bc26caa77beb1f6e02
+  sha256: c8a85b28d377cc7737e46e2d9f2b4f44ee3c0e1deac6bf46ddefc7187d30797a
 
 build:
-  number: 2
+  number: 1
   script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
   entry_points:
     - jsonschema = jsonschema.cli:main
@@ -18,9 +18,14 @@ requirements:
   host:
     - python
     - pip
-    - vcversioner
+    - setuptools_scm
   run:
     - python
+    - setuptools
+    - attrs >=17.4.0
+    - pyrsistent >=0.14.0
+    - importlib_metadata
+    - six >=1.11.0
     - functools32  # [py27]
 
 test:

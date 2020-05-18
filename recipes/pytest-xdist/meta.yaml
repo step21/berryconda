@@ -1,29 +1,27 @@
-{% set name = "pytest-xdist" %}
-{% set version = "1.23.0" %}
-{% set hash_type = "sha256" %}
-{% set hash = "28e25e79698b2662b648319d3971c0f9ae0e6500f88258ccb9b153c31110ba9b" %}
+{% set version = "1.31.0" %}
 
 package:
-  name: {{ name }}
+  name: pytest-xdist
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  {{ hash_type }}: {{ hash }}
+  url: https://pypi.io/packages/source/p/pytest-xdist/pytest-xdist-{{ version }}.tar.gz
+  sha256: 7dc0d027d258cd0defc618fb97055fbd1002735ca7a6d17037018cf870e24011
 
 build:
   number: 0
-  script: python -m pip install --no-deps --ignore-installed .
   noarch: python
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
-  build:
+  host:
+    - python
     - pip
     - setuptools_scm
   run:
+    - python
     - execnet >=1.1
-    - pytest >=3.0.0
+    - pytest >=4.4.0
     - pytest-forked
     - six
 

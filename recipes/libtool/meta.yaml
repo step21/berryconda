@@ -14,15 +14,17 @@ source:
     - 0001-link-as-needed.patch
 
 build:
-  number: 2
+  number: 1002
   skip: True  # [win]
 
 requirements:
   build:
     - {{ compiler('c') }}
     - m4
+    - help2man
     - autoconf
     - automake
+    - make
 
 test:
   commands:
@@ -44,3 +46,4 @@ extra:
     - ocefpaf
     - msarahan
     - jakirkham
+    - mingwandroid

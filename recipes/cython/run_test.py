@@ -1,3 +1,6 @@
+import platform
+is_cpython = platform.python_implementation() == 'CPython'
+
 import Cython
 import Cython.Compiler.Code
 import Cython.Compiler.FlowControl
@@ -7,7 +10,9 @@ import Cython.Compiler.Scanning
 import Cython.Compiler.Visitor
 import Cython.Plex.Actions
 import Cython.Plex.Scanners
-import Cython.Runtime.refnanny
+
+if is_cpython:
+    import Cython.Runtime.refnanny
 
 import sys
 import os

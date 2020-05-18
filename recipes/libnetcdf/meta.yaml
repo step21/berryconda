@@ -1,4 +1,12 @@
-{% set version = "4.6.1" %}
+{% set version = "4.7.4" %}
+{% set build = 3 %}
+
+# recipe-lint fails if mpi is undefined
+{% set mpi = mpi or 'nompi' %}
+{% if mpi == "nompi" %}
+# prioritize nompi via build number
+{% set build = build + 100 %}
+{% endif %}
 
 package:
   name: libnetcdf
@@ -6,25 +14,46 @@ package:
 
 source:
   url: https://github.com/Unidata/netcdf-c/archive/v{{ version }}.tar.gz
-  sha256: a2fabf27c72a5ee746e3843e1debbaad37cd035767eaede2045371322211eebb
+  sha256: 99930ad7b3c4c1a8e8831fb061cb02b2170fc8e5ccaeda733bd99c3b9d31666b
   patches:
-    - 0001-Fix-bug-Index-exceeds-dimension-bound.patch
-    - 0002-run_get_hdf4_files.sh-Use-curl-if-wget-fails-macOS-d.patch
-    - 0003-Add-find_package-Threads-REQUIRED-to-CMakeLists.txt.patch
-    - 0004-Prefer-getenv-TOPSRCDIR-over-STRINGIFY-TOPSRCDIR.patch
-    - 0005-Convert-some-c99-to-c89-by-hand.patch
-    - 0006-Fix-tests-for-Windows-VS2008-define-__func__-as-__FU.patch
-    - 0007-Fix-broken-test.patch
-    - 0008-Finish-the-missing-code-to-handle-VS-in-test_common..patch
-    - prevent_MS_runtime_libs_being_installed_again.patch  # [win]
-    # https://github.com/Unidata/netcdf4-python/issues/836
-    - higher_timeout.patch
+    - patches/0003-Add-find_package-Threads-REQUIRED-to-CMakeLists.txt.patch
+    - patches/0004-Prefer-getenv-TOPSRCDIR-over-STRINGIFY-TOPSRCDIR.patch
+    - patches/0006-Fix-tests-for-Windows-VS2008-define-__func__-as-__FU.patch
+    - patches/0008-Finish-the-missing-code-to-handle-VS-in-test_common..patch
+    - patches/0009-topsrcdir.patch
+    - patches/prevent_MS_runtime_libs_being_installed_again.patch  # [win]
+    - patches/strdup.patch
+    - patches/do_not_use_16_processes_in_tests.patch  # [ppc64le]
 
 build:
-  number: 8
+  number: {{ build }}
+  skip: true  # [win and vc<14]
+  {% if mpi != "nompi" %}
+  {% set mpi_prefix = "mpi_" + mpi %}
+  {% else %}
+  {% set mpi_prefix = "nompi" %}
+  {% endif %}
+  # add build string so packages can depend on
+  # mpi or nompi variants
+  # dependencies:
+  # `PKG_NAME * mpi_mpich_*` for mpich
+  # `PKG_NAME * mpi_*` for any mpi
+  # `PKG_NAME * nompi_*` for no mpi
+  string: {{ mpi_prefix }}_h{{ PKG_HASH }}_{{ build }}
+
+  # mpi builds require the right mpi
+  # non-mpi builds *do not* appear to require non-mpi builds
+  # at least not always
+
+  {% if mpi != 'nompi' %}
+  {% set build_pin = mpi_prefix + '_*' %}
+  {% else %}
+  {% set build_pin = '' %}
+  {% endif %}
+
   run_exports:
     #   https://abi-laboratory.pro/tracker/timeline/netcdf/
-    - {{ pin_subpackage('libnetcdf') }}
+    - {{ pin_subpackage('libnetcdf', max_pin='x.x.x.x') }} {{ build_pin }}
 
 requirements:
   build:
@@ -33,19 +62,23 @@ requirements:
     - pkg-config  # [not win]
     - {{ compiler('c') }}
   host:
+    - {{ mpi }}  # [mpi != 'nompi']
     - msinttypes  # [win and vc<14]
     - bzip2
     - curl
     - zlib
     - hdf4
+    # without this repeat reference, conda-smithy doesn't pin correctly
     - hdf5
+    - hdf5 * {{ mpi_prefix }}_*
     - jpeg
   run:
+    - {{ mpi }}  # [mpi != 'nompi']
     - bzip2
     - curl
     - zlib
     - hdf4
-    - hdf5
+    - hdf5 * {{ mpi_prefix }}_*
     - jpeg
     # Curl should be pulling this... Investigate it later.
     - libssh2  # [win]
@@ -55,18 +88,12 @@ test:
     - test -f ${PREFIX}/lib/libnetcdf.a  # [not win]
     - test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}  # [not win]
     - nc-config --all  # [not win]
-    # All these endpotins failed at some point due to various reasons.
-    - ncdump -h "http://geoport-dev.whoi.edu/thredds/dodsC/estofs/atlantic"
-    - ncdump -h "https://data.nodc.noaa.gov/thredds/dodsC/ioos/sccoos/scripps_pier/scripps_pier-2016.nc"
-    - ncdump -h "http://oos.soest.hawaii.edu/thredds/dodsC/hioos/model/atm/ncep_pac/NCEP_Pacific_Atmospheric_Model_best.ncd"
-    - ncdump -h "http://oos.soest.hawaii.edu/thredds/dodsC/usgs_dem_10m_tinian"
-    - ncdump -h "https://www.ncei.noaa.gov/thredds/dodsC/namanl/201609/20160929/namanl_218_20160929_1800_006.grb"
 
 about:
   home: http://www.unidata.ucar.edu/software/netcdf/
   license: MIT
   license_file: COPYRIGHT
-  summary: 'Libraries and data formats that support array-oriented scientific data'
+  summary: Libraries and data formats that support array-oriented scientific data
 
 extra:
   recipe-maintainers:
@@ -75,3 +102,5 @@ extra:
     - ocefpaf
     - mingwandroid
     - msarahan
+    - beckermr
+    - xylar

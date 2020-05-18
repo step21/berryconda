@@ -1,60 +1,113 @@
-{% set version = "4.0.9" %}
+{% set version = "4.1.0" %}
 
 package:
   name: libtiff
   version: {{ version }}
 
 source:
-  url: http://download.osgeo.org/libtiff/tiff-{{ version }}.tar.gz
-  sha256: 6e7bdeec2c310734e734d19aae3a71ebe37a4d842e0e23dbb1b8921c0026cfcd
-  patches:
-    - 0001-CVE-2017-9935.patch
-    - 0002-CVE-2017-18013.patch
-    - 0003-CVE-2018-5784.patch
-    - 0004-CVE-2017-11613_part1.patch
-    - 0005-CVE-2017-11613_part2.patch
-    - 0006-CVE-2018-7456.patch
-    - 0007-CVE-2017-17095.patch
+  - url: https://download.osgeo.org/libtiff/tiff-{{ version }}.tar.gz
+    sha256: 5d29f32517dadb6dbcd1255ea5bbc93a2b54b94fbf83653b4d65c7d6775b8634
+    folder: .
+    patches:
+      - patches/fix_TIFFReadRawStrip_man_page_typo.patch
+      # It seems that a recent patch in tifffile 4.1 may have broken
+      # binary compatibility on windows.
+      # https://gitlab.com/libtiff/libtiff/issues/173
+      # https://github.com/python-pillow/Pillow/issues/4237
+      - use_unix_io.patch
+
+    # https://github.com/python-pillow/Pillow/issues/4237
+    # https://gitlab.com/libtiff/libtiff/issues/173
+    # This change isn't so safe as it stops compatibility with libtiff on pypi
+    # https://github.com/conda-forge/libtiff-feedstock/pull/49#issuecomment-570708183
+    # - patches/173_tif_unix_and_tif_win32_compatibility.patch
+  # Test image used for regression testing
+  - url: https://github.com/python-pillow/Pillow/raw/master/Tests/images/hopper_lzw.tif
+    sha256: 246e5de06ed6f4c63d8389fcb3342b18909e0f362a5a22f76f779ad52f46090d
+    fn: hopper_lzw.tif
 
 build:
-  number: 2
+  number: 6
+  skip: True  # [win and vc<14]
   # Does a very good job of maintaining compatibility.
   #    https://abi-laboratory.pro/tracker/timeline/libtiff/
   run_exports:
     - {{ pin_subpackage('libtiff', max_pin='x') }}
+  missing_dso_whitelist:
+    # Only used by libtiff,bin/tiffgt (a viewer), which is ok.
+    - /opt/X11/lib/libGL.1.dylib
+    - /opt/X11/lib/libglut.3.dylib
 
 requirements:
   build:
-    - cmake  # [win]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - cmake  # [win]
+    - ninja  # [win]
+    - make  # [not win]
   host:
     - zlib
     - jpeg
-    - xz  # [not win]
+    - xz
+    - zstd
+    - libwebp-base  # [linux or osx]
   run:
     - zlib
     - jpeg
-    - xz  # [not win]
+    - xz
+    - zstd
+    - libwebp-base  # [linux or osx]
 
 test:
+  requires:
+    # Regression testing since libtiff is only pinned to the major version
+    - python 3.7  # Test with only 1 version of python
+    - numpy
+    - pillow
+    # For opencv testing, add  mesa-libGL to the yum_requirements.txt file
+    - opencv      # [not (aarch64 or ppc64le)]
+    # tifffile 2020 became a noarch package and moved certain C dependencies
+    # to imagecodecs
+    # unfortunately, as of 2020/03/16, that package doesn't exist yet on
+    # conda-forge and is rather hard to build.
+    # for now, we will pin the tests to tifffile 2019
+    # until full imagecodecs is supported in conda-forge
+    # (imagecodecs-lite doesn't seem to support the decompression algorithm
+    #  we need for this test)
+    - tifffile 2019   # [not (aarch64 or ppc64le)]
+  files:
+    - downstream_tests.py
+  source_files:
+    - hopper_lzw.tif
   commands:
     - test -f ${PREFIX}/lib/libtiff.a  # [not win]
     - test -f ${PREFIX}/lib/libtiffxx.a  # [not win]
-    - test -f ${PREFIX}/lib/libtiff${SHLIB_EXT}  # [not win]
-    - test -f ${PREFIX}/lib/libtiffxx${SHLIB_EXT}  # [not win]
-    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
-    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
+    - test -f ${PREFIX}/lib/libtiff{{ SHLIB_EXT }}  # [not win]
+    - test -f ${PREFIX}/lib/libtiffxx{{ SHLIB_EXT }}  # [not win]
+    - if not exist %PREFIX%\\Library\\bin\\tiff.dll exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\bin\\tiffxx.dll exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\bin\\libtiff.dll exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\bin\\libtiffxx.dll exit 1  # [win]
+    # Regression tests with downstream packages
+    #    osx test has has some trouble with my regression tests.
+    #    Since the patch doesn't affect OSX, we are just skipping the OSX tests.
+    - python -m trace --trace --ignore-dir %CONDA_PREFIX% downstream_tests.py  # [win]
+    - python -m trace --trace --ignore-dir $CONDA_PREFIX downstream_tests.py   # [linux]
 
 about:
-  home: http://www.remotesensing.org/libtiff/
+  home: http://www.libtiff.org/
   license: HPND
   license_file: COPYRIGHT
   summary: 'Support for the Tag Image File Format (TIFF).'
+  description: |
+    This software provides support for the Tag Image File Format (TIFF), a
+    widely used format for storing image data.
+  doc_url: http://www.libtiff.org/document.html
 
 extra:
    recipe-maintainers:
     - jakirkham
+    - mingwandroid
+    - msarahan
     - ocefpaf
     - stuarteberg
-    - msarahan

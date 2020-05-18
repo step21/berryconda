@@ -1,4 +1,4 @@
-
+SETLOCAL EnableDelayedExpansion
 cd source
 
 :: Remove all instances of /W4 from configure.
@@ -13,34 +13,34 @@ move configure.new configure
 :: rc.exe gets confused with the '/' form of slashes
 set MSYS_RC_MODE=1
 
-:: Can't seem to determine msys2 due to bug in config.guess,
-:: BUT runConfigureICU expects cygwin, so we just pretend we are
-:: The prefix looks strange but it seems we are chrooted into almost the right
-:: place by msys2, but can't write to the directories we need - fix up below
-bash runConfigureICU Cygwin/MSVC --build=x86_64-pc-cygwin --prefix=/icu
-:: Ignore errorlevel - there are warnings about various things missing
-:: which we don't actually seem to need. Just keep going...
-::if errorlevel 1 exit 1
+:: 32-bit and VS2015 ends in failure:
+:: uconv.o : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance
+:: uconv.o : error LNK2001: unresolved external symbol _uconvmsg_dat
+:: ../../bin/uconv.exe : fatal error LNK1120: 1 unresolved externals
+:: .. without this
+if "%ARCH%"=="32" (
+  if "%c_compiler%"=="vs2015" (
+    set EXTRA_OPTS=--disable-extras
+  )
+)
 
-make -j%CPU_COUNT%
-:: Run make twice. There is some timing issue between msys2 and rc.exe
-:: that means that directories are created after they are required...
-make -j%CPU_COUNT%
-if errorlevel 1 exit 1
+:: This directory is needed during the install process but isn't created by the scripts.
+mkdir data\out\tmp
 
-make install
-if errorlevel 1 exit 1
+set BUILD=x86_64-pc-cygwin
+set HOST=x86_64-pc-cygwin
+cd ..
 
-:: Fix up for not being able to write into the root path with msys2
-xcopy /e /i %LIBRARY_PREFIX%\icu\lib %LIBRARY_LIB%
-if errorlevel 1 exit 1
-xcopy /e /i %LIBRARY_PREFIX%\icu\bin %LIBRARY_BIN%
-if errorlevel 1 exit 1
-xcopy /e /i %LIBRARY_PREFIX%\icu\include %LIBRARY_INC%
-if errorlevel 1 exit 1
-xcopy /e /i %LIBRARY_PREFIX%\icu\share %LIBRARY_PREFIX%\share
-if errorlevel 1 exit 1
-rmdir /s /q %LIBRARY_PREFIX%\icu
+copy "%RECIPE_DIR%\build.sh" .
+set MSYSTEM=MINGW%ARCH%
+set MSYS2_PATH_TYPE=inherit
+set CHERE_INVOKING=1
+FOR /F "delims=" %%i in ('cygpath.exe -u "%LIBRARY_PREFIX%"') DO set "PREFIX=%%i"
+
+set CC=cl.exe
+set CXX=cl.exe
+
+bash -lc "./build.sh"
 if errorlevel 1 exit 1
 
 :: The .dlls end up in the wrong place

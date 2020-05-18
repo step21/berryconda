@@ -1,4 +1,4 @@
-{% set version = "1.9.4" %}
+{% set version = "1.11.1" %}
 
 package:
   name: argcomplete
@@ -7,20 +7,20 @@ package:
 source:
   fn: argcomplete-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/a/argcomplete/argcomplete-{{ version }}.tar.gz
-  md5: 9bb3b61a849f84723e63051240f74014
+  md5: cea45ef497df274438b75bcb2a8eb011
 
 build:
   number: 0
-  script: python setup.py install
-
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+  noarch: python
+    
 requirements:
-  build:
+  host:
     - python
     - setuptools
-
+    - pip
   run:
     - python
-
 test:
   imports:
     - argcomplete
@@ -37,3 +37,4 @@ about:
 extra:
   recipe-maintainers:
     - asmeurer
+    - xylar

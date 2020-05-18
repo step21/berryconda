@@ -1,28 +1,32 @@
-{% set version = "1.2" %}
+{% set version = "1.5.1" %}
 
 package:
   name: sympy
   version: {{ version }}
 
 source:
-  fn: sympy-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/s/sympy/sympy-{{ version }}.tar.gz
-  md5: 11b24840f5740bb03feddb7d60c18a67
+  sha256: d77901d748287d15281f5ffe5b0fef62dd38f357c2b827c44ff07f35695f4e7e
 
 build:
-  number: 0
-  script: python setup.py install
+  number: 3
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  entry_points:
+    - isympy = isympy:main
 
 requirements:
-  build:
-    - fastcache
+  host:
+    - fastcache       # [python_impl == "cpython"]
     - mpmath
+    - pip
     - python
   run:
-    - fastcache
+    - fastcache       # [python_impl == "cpython"]
     - mpmath >=0.19
     - python
-    - gmpy2 >=2.0.8   # [not win]
+    - gmpy2 >=2.0.8   # [python_impl == "cpython" and not win]
+  run_constrained:
+    - antlr-python-runtime >=4.7,<4.8
 
 test:
   commands:
@@ -31,8 +35,8 @@ test:
     - sympy
 
 about:
-  home: http://sympy.org
-  license: 3-clause BSD
+  home: https://sympy.org
+  license: BSD-3-Clause
   license_family: BSD
   license_file: LICENSE
   summary: Python library for symbolic mathematics
@@ -40,8 +44,9 @@ about:
     SymPy is a Python library for symbolic mathematics. It aims to become a
     full-featured computer algebra system (CAS) while keeping the code as
     simple as possible in order to be comprehensible and easily extensible.
-  doc_url: http://docs.sympy.org/latest/index.html
+  doc_url: https://docs.sympy.org/latest/index.html
   dev_url: https://github.com/sympy/sympy
+  doc_source_url: https://github.com/sympy/sympy/tree/master/doc
 
 extra:
   recipe-maintainers:

@@ -17,9 +17,11 @@ source:
     - 0002-Don-t-define-FFI_COMPLEX_TYPEDEF-ifndef-FFI_TARGET_H.patch  # [win]
     - 0003-Win64-Remove-two-SHORT-annotations.patch                    # [win]
     - 0004-Remove-C99-constructs.patch                                 # [win]
+    - windows-static.patch                                             # [win]
+    - fix_win_libffi_pc.patch                                          # [win]
 
 build:
-  number: 4
+  number: 1007
   run_exports:
     # good history: https://abi-laboratory.pro/tracker/timeline/libffi/
     - {{ pin_subpackage('libffi') }}
@@ -27,6 +29,7 @@ build:
 requirements:
   build:
     - posix                              # [win]
+    - make                               # [unix] 
     - {{posix}}autoconf
     - {{posix}}automake{{ am_version }}  # [win]
     - {{posix}}automake                  # [not win]
@@ -45,7 +48,6 @@ test:
     - test -e $PREFIX/lib/libffi.a                                 # [not win]
     - test -e $PREFIX/include/ffi.h                                # [not win]
     - test -e $PREFIX/include/ffitarget.h                          # [not win]
-    - if not exist %LIBRARY_PREFIX%/bin/libffi-*.dll exit /b 1     # [win]
     - if not exist %LIBRARY_PREFIX%/lib/libffi.lib exit /b 1       # [win]
     - if not exist %LIBRARY_PREFIX%/include/ffi.h exit /b 1        # [win]
     - if not exist %LIBRARY_PREFIX%/include/ffitarget.h exit /b 1  # [win]

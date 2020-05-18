@@ -1,0 +1,102 @@
+{% set version = "5.8.0" %}
+{% set PYTHON = "python" %}
+
+package:
+  name: pyutilib
+  version: {{ version }}
+
+source:
+  fn: PyUtilib-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/P/PyUtilib/PyUtilib-{{ version }}.tar.gz
+  sha256: fe31b4d6a96bf1032a2096e9daf5cff6a36a4b6b6ed62dd079e4e1e5e2560e99
+
+build:
+  number: 1
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+  entry_points:
+    - test.pyutilib=pyutilib.dev.runtests:runPyUtilibTests
+    - lbin=pyutilib.dev.lbin:main
+    - lpython=pyutilib.dev.lpython:main
+    - pypi_downloads=pyutilib.dev.pypi_downloads:main
+    - replacecopyright=pyutilib.dev.replaceCopyright:main
+    - checkcopyright=pyutilib.dev.checkCopyright:main
+    - pyutilib_test_driver=pyutilib.autotest.driver:main
+    - dispatch_srvr=pyutilib.pyro.dispatch_srvr:main
+
+requirements:
+  host:
+    - python
+    - pip
+    - six
+    - nose
+
+  run:
+    - python
+    - setuptools
+    - nose
+    - six
+
+test:
+  imports:
+    - pyutilib
+    - pyutilib.autotest
+    - pyutilib.autotest.tests
+    - pyutilib.common
+    - pyutilib.component
+    - pyutilib.component.app
+    - pyutilib.component.app.tests
+    - pyutilib.component.config
+    - pyutilib.component.config.tests
+    - pyutilib.component.core
+    - pyutilib.component.core.tests
+    - pyutilib.component.executables
+    - pyutilib.component.loader
+    - pyutilib.component.loader.tests
+    - pyutilib.dev
+    - pyutilib.dev.tests
+    - pyutilib.enum
+    - pyutilib.enum.tests
+    - pyutilib.excel
+    - pyutilib.excel.tests
+    - pyutilib.factory
+    - pyutilib.math
+    - pyutilib.math.tests
+    - pyutilib.misc
+    - pyutilib.misc.tests
+    - pyutilib.misc.tests.import_data
+    - pyutilib.misc.tests.import_data.a
+    - pyutilib.misc.tests.import_data.b
+    - pyutilib.ply
+    - pyutilib.pyro
+    - pyutilib.services
+    - pyutilib.subprocess
+    - pyutilib.subprocess.tests
+    - pyutilib.th
+    - pyutilib.th.tests
+    - pyutilib.workflow
+    - pyutilib.workflow.tests
+
+  commands:
+    - test.pyutilib --help
+    - pyutilib_test_driver --help
+    - command -v lbin       # [unix]
+    - where lbin            # [win]
+    - command -v lpython    # [unix]
+    - where lpython         # [win]
+    - dispatch_srvr --help
+
+about:
+  home: https://github.com/PyUtilib/pyutilib
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: '{{ environ["RECIPE_DIR"] }}/PyUtilib-LICENSE.txt'
+  summary: 'PyUtilib: A collection of Python utilities'
+
+extra:
+  recipe-maintainers:
+    - whart222
+    - jsiirola
+    - astrojuanlu
+    - blnicho

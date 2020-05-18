@@ -8,11 +8,11 @@ if [ `uname` == Linux ]; then
     export HELP2MAN=/bin/true
 fi
 
-# if [[ ${HOST} =~ .*linux.* ]]; then
-#     export CC=${GCC}
-#     # TODO :: Handle cross-compilation properly here
-#     export CC_FOR_BUILD=${GCC}
-# fi
+if [[ ${HOST} =~ .*linux.* ]]; then
+    export CC=${GCC}
+    # TODO :: Handle cross-compilation properly here
+    export CC_FOR_BUILD=${GCC}
+fi
 
 ./configure --prefix="$PREFIX"  \
             --host=${HOST}      \
@@ -21,6 +21,3 @@ fi
 make -j${CPU_COUNT} ${VERBOSE_AT}
 make check
 make install
-
-# We can remove this when we start using the new conda-build.
-find $PREFIX -name '*.la' -delete

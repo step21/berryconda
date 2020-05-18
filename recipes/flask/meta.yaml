@@ -1,7 +1,5 @@
 {% set name = "Flask" %}
-{% set version = "1.0.2" %}
-{% set hash_type = "sha256" %}
-{% set hash = "2271c0070dbcb5275fad4a82e29f23ab92682dc45f9dfbc22c02ba9b9322ce48" %}
+{% set version = "1.1.2" %}
 
 package:
   name: {{ name|lower }}
@@ -10,17 +8,17 @@ package:
 source:
   fn: {{ name }}-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  {{ hash_type }}: {{ hash }}
+  sha256: 4efa1ae2d7c9865af48986de8aeb8504bf32c7f3d6fdc9353d34b21f4b127060
 
 build:
-  number: 1
-  script: python -m pip install --no-deps --ignore-installed .
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
   entry_points:
     - flask = flask.cli:main
   noarch: python
 
 requirements:
-  build:
+  host:
     - python
     - pip
     - setuptools
@@ -29,8 +27,8 @@ requirements:
     - python
     - click >=5.1
     - itsdangerous >=0.24
-    - jinja2 >=2.10
-    - werkzeug >=0.14
+    - jinja2 >=2.10.1
+    - werkzeug >=0.15
 
 test:
   imports:
@@ -44,7 +42,7 @@ about:
   home: http://flask.pocoo.org
   license: BSD 3-Clause
   license_family: BSD
-  license_file: LICENSE
+  license_file: LICENSE.rst
   summary: A microframework based on Werkzeug, Jinja2 and good intentions.
   description: |
     Flask is a microframework for Python based on Werkzeug and Jinja2. It's
@@ -60,3 +58,4 @@ extra:
     - nehaljwani
     - ukaratay
     - marcelotrevisani
+    - xylar

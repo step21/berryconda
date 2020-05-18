@@ -1,7 +1,7 @@
 {% set name = "pytest-remotedata" %}
-{% set version = "0.3.0" %}
+{% set version = "0.3.1" %}
 {% set git_url = "https://github.com/astropy/pytest-remotedata" %}
-{% set sha256 = "cb0a6e22ba07ff870edeb17d5d38c495e8f37e2db741cd15e723fb8e609909eb" %}
+{% set sha256 = "15b75a38431da96a4da5e48b20a18e4dcc40d191abc199b17cb969f818530481" %}
 
 package:
   name: {{ name|lower }}

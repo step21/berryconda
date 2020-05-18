@@ -1,4 +1,4 @@
-{% set version = "4.2" %}
+{% set version = "5.2" %}
 
 package:
   name: pytest-runner
@@ -6,10 +6,10 @@ package:
 
 source:
   url: https://pypi.io/packages/source/p/pytest-runner/pytest-runner-{{ version }}.tar.gz
-  sha256: d23f117be39919f00dd91bffeb4f15e031ec797501b717a245e377aee0f577be
+  sha256: 96c7e73ead7b93e388c5d614770d2bae6526efd997757d3543fe17b557a0942b
 
 build:
-    number: 1
+    number: 0
     noarch: python
     script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
 

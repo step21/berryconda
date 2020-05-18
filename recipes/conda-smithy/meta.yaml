@@ -1,40 +1,44 @@
-{% set version = "2.3.2" %}
+{% set version = "3.6.17" %}
 
 package:
   name: conda-smithy
   version: {{ version }}
 
 source:
-  fn: conda-smithy-v{{ version }}.tar.gz
-  url: https://github.com/conda-forge/conda-smithy/archive/v{{ version }}.tar.gz
-  sha256: 55d75429aecbdf8842fa93c106d319e65075f56f53cbbaeafdbfdaafb4b8bb31
+  url: https://github.com/conda-forge/conda-smithy/releases/download/v{{ version }}/conda-smithy-{{ version }}.tar.gz
+  sha256: ac9bf1addcb185469ea88ed09d703756d9d8f4a202be99d413ce1d5859457a32
 
 build:
   number: 0
   noarch: python
   script:
-    - python setup.py install --single-version-externally-managed --record=record.txt
-    - rm -f "${PREFIX}/bin/conda"           # [unix]
+    - "{{ PYTHON }} -m pip install . --no-deps -vv"
+    - rm -f "${PREFIX}/bin/conda"           # [not win]
     - del /f /q "%PREFIX%\\Scripts\\conda"  # [win]
   entry_points:
     - feedstocks = conda_smithy.feedstocks:main
     - conda-smithy = conda_smithy.cli:main
 
 requirements:
-  build:
-    - python
-    - setuptools
+  host:
+    - python >=3.6
+    - pip
   run:
-    - python
-    - conda-build-all >=1.0.3
-    - conda
-    - conda-build >=1.21.12,!=2.0.9
+    - python >=3.6
+    - conda >=4.2
+    - conda-build >=3.18.3
     - jinja2
     - requests
     - pycrypto
+    - git
     - gitpython
     - pygithub <2
-    - ruamel_yaml
+    - ruamel.yaml >=0.16
+    - toolz
+    - vsts-python-api
+    - conda-forge-pinning
+    - scrypt
+    - license-expression
 
 test:
   imports:
@@ -46,7 +50,11 @@ test:
 
 about:
   home: https://github.com/conda-forge/conda-smithy
-  license: BSD 3-clause
+  license: BSD-3-Clause
   license_family: BSD
-  license_file: LICENSE
+  license_file: LICENSE.txt
   summary: The tool for managing conda-forge feedstocks
+
+extra:
+  recipe-maintainers:
+    - conda-forge/Core

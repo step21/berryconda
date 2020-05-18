@@ -1,4 +1,4 @@
-{% set version = "58.2" %}
+{% set version = "64.2" %}
 {% set version_under = version.replace(".", "_") %}
 
 package:
@@ -6,17 +6,25 @@ package:
   version: {{ version }}
 
 source:
-  url: http://download.icu-project.org/files/icu4c/{{ version }}/icu4c-{{ version_under }}-src.tgz
-  sha256: 2b0a4410153a9b20de0e20c7d8b66049a72aef244b53683d0d7521371683da0c
-  patches:
-    # Include an extra header when using mingw.
-    - icu4c-4_9_1-mingw-w64-mkdir-compatibility.patch  # [win]
-    # Omit lib prefix on libraries.
-    - icu-config.patch  # [win]
-    - icudata-stdlibs.patch
+  - url: http://download.icu-project.org/files/icu4c/{{ version }}/icu4c-{{ version_under }}-src.tgz
+    sha256: 627d5d8478e6d96fc8c90fed4851239079a561a6a8b9e48b0892f24e82d31d6c
+    patches:
+      # Include an extra header when using mingw.
+      - icu4c-4_9_1-mingw-w64-mkdir-compatibility.patch  # [win]
+      # Omit lib prefix on libraries.
+      - icu-config.patch  # [win]
+      - mach-port-t.patch  # [osx]
+
+  - url: http://download.icu-project.org/files/icu4c/{{ version }}/icu4c-{{ version_under }}-data.zip
+    sha256: fba0e89f5b3f285d722a83317647bffee69b6f1eb8d067d5da03c5677c45e510
+    folder: source/data
 
 build:
-  number: 0
+  number: 1
+  run_exports:
+    # icu changes their file extension with each major rev.  Default pin OK.
+    - {{ pin_subpackage('icu') }}
+  skip: True   # [win and vc<14]
 
 requirements:
   build:
@@ -24,6 +32,7 @@ requirements:
     - m2-make  # [win]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - make     # [unix]
   host:
   run:
 

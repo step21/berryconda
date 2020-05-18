@@ -1,28 +1,24 @@
 {% set name = "parso" %}
-{% set version = "0.3.1" %}
-{% set file_ext = "tar.gz" %}
-{% set hash_type = "sha256" %}
-{% set hash_value = "35704a43a3c113cce4de228ddb39aab374b8004f4f2407d070b6a2ca784ce8a2" %}
+{% set version = "0.7.0" %}
 
 package:
-  name: '{{ name|lower }}'
-  version: '{{ version }}'
+  name: {{ name|lower }}
+  version: {{ version }}
 
 source:
-  fn: '{{ name }}-{{ version }}.{{ file_ext }}'
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ file_ext }}
-  '{{ hash_type }}': '{{ hash_value }}'
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 908e9fae2144a076d72ae4e25539143d40b8e3eafbaeae03c1bfe226f4cdf12c
 
 build:
   noarch: python
   number: 0
-  script: python -m pip install --no-deps --ignore-installed .
+  script: {{ PYTHON }} -m pip install . -vv
 
 requirements:
   host:
     - python
     - pip
-    - setuptools
   run:
     - python
 

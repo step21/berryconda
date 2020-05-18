@@ -1,0 +1,40 @@
+{% set version = "1.14" %}  # remember to update add_version.patch
+{% set sha256 = "f19eff1dcf5f40f4a57d959584acd318155873c43d723e25dd1b91636f94ca41" %}
+
+package:
+  name: lcov
+  version: {{ version }}
+
+source:
+  url: https://github.com/linux-test-project/lcov/archive/v{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+    - add_version.patch
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - perl
+    - make
+  run:
+    - perl
+
+test:
+  commands:
+    - lcov --version
+
+about:
+  home: http://ltp.sourceforge.net/test/coverage/lcov.php
+  summary: 'LCOV is an extension of GCOV, a GNU tool which provides information about
+  what parts of a program are actually executed (i.e. "covered") while running
+  a particular test case.'
+  license: GPL-2
+  license_family: GPL-2
+  license_url: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+  license_file: '{{ environ["SRC_DIR"] }}/COPYING'
+
+extra:
+  recipe-maintainers:
+    - mjscosta

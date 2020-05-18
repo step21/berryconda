@@ -1,5 +1,6 @@
-{% set version = "0.9.0" %}
-{% set sha256 = "2ef37ab1b1896b9721332d19ac59ceb0205c46068830be583a008d6d540fe046" %}
+{% set version = "0.12.4" %}
+{% set js_version = "0.12.4" %}
+{% set sha256 = "26d67f74a67f45de076aaf19f5ef5e676a87c44e43e306408825b3b8def54b57" %}
 
 package:
   name: ipyleaflet
@@ -10,8 +11,9 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 1
-  script: python -m pip install --no-deps --ignore-installed .
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 requirements:
   build:
@@ -20,17 +22,26 @@ requirements:
     - jupyter
   run:
     - python
-    - ipywidgets >=7.0.0,<8.0.0
+    - ipywidgets >=7.5.0,<8.0.0
     - traittypes >=0.2.1,<0.3.0
-    - xarray >=0.10.0,<0.11.0
+    - xarray >=0.10.0
+    - branca >=0.3.1,<0.4.0
 
 test:
   imports:
     - ipyleaflet
+  commands:
+    - test -f ${PREFIX}/share/jupyter/nbextensions/jupyter-leaflet/extension.js                                     # [unix]
+    - test -f ${PREFIX}/share/jupyter/nbextensions/jupyter-leaflet/index.js                                         # [unix]
+    - test -f ${PREFIX}/share/jupyter/lab/extensions/jupyter-leaflet-{{ js_version }}.tgz                              # [unix]
+    - if exist %PREFIX%\\share\\jupyter\\nbextensions\\jupyter-leaflet\\extension.js (exit 0) else (exit 1)         # [win]
+    - if exist %PREFIX%\\share\\jupyter\\nbextensions\\jupyter-leaflet\\index.js (exit 0) else (exit 1)             # [win]
+    - if exist %PREFIX%\\share\\jupyter\\lab\\extensions\\jupyter-leaflet-{{ js_version }}.tgz (exit 0) else (exit 1)  # [win]
 
 about:
   home: https://github.com/jupyter-widgets/ipyleaflet
   license: MIT
+  license_file: LICENSE
   summary: A Jupyter widget for dynamic Leaflet maps
   doc_url: http://ipyleaflet.readthedocs.io
   dev_url: https://github.com/jupyter-widgets/ipyleaflet
@@ -40,3 +51,4 @@ extra:
     - SylvainCorlay
     - ellisonbg
     - jasongrout
+    - martinRenou

@@ -1,4 +1,4 @@
-{% set version = "4.2.4" %}
+{% set version = "4.5.0" %}
 
 package:
   name: lxml
@@ -6,10 +6,10 @@ package:
 
 source:
   url: https://pypi.io/packages/source/l/lxml/lxml-{{ version }}.tar.gz
-  sha256: e2afbe403090f5893e254958d02875e0732975e73c4c0cdd33c1f009a61963ca
+  sha256: 8620ce80f50d023d414183bf90cc2576c2837b88e00bea3f33ad2630133bbb60
 
 build:
-  number: 0
+  number: 1
   script:
     - python -m pip install --no-deps --ignore-installed . --global-option="--with-xslt-config=$PREFIX/bin/xslt-config"  # [not win]
     - python -m pip install --no-deps --ignore-installed .  # [win]
@@ -32,9 +32,6 @@ test:
     - lxml
     - lxml.etree
     - lxml.objectify
-  commands:
-    - conda inspect linkages -p $PREFIX lxml  # [not win]
-    - conda inspect objects -p $PREFIX lxml  # [osx]
 
 about:
   home: http://lxml.de/

@@ -1,17 +1,27 @@
 #!/bin/bash
 
-export CFLAGS="-fPIC"
-export LDFLAGS="-L${PREFIX}/lib"
-export CPPFLAGS="-I${PREFIX}/include"
+declare -a CMAKE_PLATFORM_FLAGS
+if [[ ${HOST} =~ .*linux.* ]]; then
+    CMAKE_PLATFORM_FLAGS+=(-DCMAKE_TOOLCHAIN_FILE="${RECIPE_DIR}/cross-linux.cmake")
+fi
 
-sh configure --prefix=$PREFIX \
-             --enable-shared \
-             --disable-debug \
-             --disable-dependency-tracking
-
+mkdir build_shared && cd $_
+cmake \
+    -DCMAKE_PREFIX_PATH=$PREFIX \
+    -DCMAKE_INSTALL_PREFIX=$PREFIX \
+    -DJAS_ENABLE_AUTOMATIC_DEPENDENCIES=False \
+    ${CMAKE_PLATFORM_FLAGS[@]} ..
 make
-make check
 make install
+cd ..
 
-# We can remove this when we start using the new conda-build.
-find $PREFIX -name '*.la' -delete
+mkdir build_static && cd $_
+cmake \
+    -DJAS_ENABLE_SHARED=OFF \
+    -DCMAKE_PREFIX_PATH=$PREFIX \
+    -DCMAKE_INSTALL_PREFIX=$PREFIX \
+    -DJAS_ENABLE_AUTOMATIC_DEPENDENCIES=False \
+    ${CMAKE_PLATFORM_FLAGS[@]} ..
+make
+make install
+cd ..

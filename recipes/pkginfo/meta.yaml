@@ -1,29 +1,24 @@
-{% set name = "pkginfo" %}
-{% set version = "1.4.2" %}
-{% set hash_type = "sha256" %}
-{% set hash_value = "5878d542a4b3f237e359926384f1dde4e099c9f5525d236b1840cf704fa8d474" %}
+{% set version = "1.5.0.1" %}
 
 package:
-  name: '{{ name|lower }}'
-  version: '{{ version }}'
+  name: pkginfo
+  version: {{ version }}
 
 source:
-  fn: '{{ name }}-{{ version }}.tar.gz'
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  '{{ hash_type }}': '{{ hash_value }}'
+  url: https://pypi.io/packages/source/p/pkginfo/pkginfo-{{ version }}.tar.gz
+  sha256: 7424f2c8511c186cd5424bbf31045b77435b37a8d604990b79d4e70d741148bb
 
 build:
   noarch: python
-  number: 1
+  number: 0
   entry_points:
     - pkginfo = pkginfo.commandline:main
-  script: python -m pip install --no-deps --ignore-installed .
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
   host:
-    - pip
     - python
-    - setuptools
+    - pip
   run:
     - python
 

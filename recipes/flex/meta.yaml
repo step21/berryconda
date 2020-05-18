@@ -10,7 +10,7 @@ source:
 
 build:
   skip: true  # [win]
-  number: 3
+  number: 1004
   detect_binary_files_with_prefix: true
 
 requirements:
@@ -19,7 +19,9 @@ requirements:
     - {{ compiler('cxx') }}
     - automake
     - m4
+    - make      # [unix]
     - libiconv  # [not linux and not win]
+    - help2man  # [not win]
   run:
     - libiconv  # [not linux and not win]
     - m4

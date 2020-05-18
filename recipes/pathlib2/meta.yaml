@@ -1,22 +1,21 @@
-{% set version = "2.3.2" %}
+{% set version = "2.3.5" %}
 
 package:
   name: pathlib2
   version: {{ version }}
 
 source:
-  fn: pathlib2-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/p/pathlib2/pathlib2-{{ version }}.tar.gz
-  sha256: 8eb170f8d0d61825e09a95b38be068299ddeda82f35e96c3301a8a5e7604cb83
+  sha256: 6cd9a47b597b37cc57de1c05e56fb1a1c9cc9fab04fe78c29acd090418529868
 
 build:
-  number: 0
-  script: python setup.py install --single-version-externally-managed --record=record.txt
+  number: 1
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv"
 
 requirements:
-  build:
+  host:
     - python
-    - setuptools
+    - pip
   run:
     - python
     - six
@@ -30,7 +29,7 @@ about:
   home: https://github.com/mcmtroffaes/pathlib2
   license: MIT
   license_file: LICENSE.rst
-  summary: "Fork of pathlib aiming to support the full stdlib Python API."
+  summary: "Fork of pathlib aiming to support the full stdlib Python API"
 
 extra:
   recipe-maintainers:

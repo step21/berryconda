@@ -1,0 +1,92 @@
+From d2ff224005ac997e0806c66a882148e9595659d6 Mon Sep 17 00:00:00 2001
+From: Gregory Lee <grlee77@gmail.com>
+Date: Fri, 17 Apr 2020 16:00:33 -0400
+Subject: [PATCH 1/2] BUG: explicitly call np.import_array() from Cython files
+ that cimport numpy
+
+Cython 3.0a1 segfaults during the test suite if np.import_array() has not been called
+---
+ pywt/_extensions/_dwt.pyx  | 1 +
+ pywt/_extensions/_pywt.pxd | 3 +++
+ pywt/_extensions/_swt.pyx  | 4 +++-
+ 3 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/pywt/_extensions/_dwt.pyx b/pywt/_extensions/_dwt.pyx
+index d6a0b0b5..9851f038 100644
+--- a/pywt/_extensions/_dwt.pyx
++++ b/pywt/_extensions/_dwt.pyx
+@@ -9,6 +9,7 @@ import numpy as np
+
+ include "config.pxi"
+
++np.import_array()
+
+ cpdef dwt_max_level(size_t data_len, size_t filter_len):
+     return common.dwt_max_level(data_len, filter_len)
+diff --git a/pywt/_extensions/_pywt.pxd b/pywt/_extensions/_pywt.pxd
+index 5fcd888a..8485495e 100644
+--- a/pywt/_extensions/_pywt.pxd
++++ b/pywt/_extensions/_pywt.pxd
+@@ -1,5 +1,8 @@
+ from . cimport wavelet
+ cimport numpy as np
++
++np.import_array()
++
+ include "config.pxi"
+
+ ctypedef Py_ssize_t pywt_index_t
+diff --git a/pywt/_extensions/_swt.pyx b/pywt/_extensions/_swt.pyx
+index 0b3d8210..4b8b324e 100644
+--- a/pywt/_extensions/_swt.pyx
++++ b/pywt/_extensions/_swt.pyx
+@@ -10,9 +10,11 @@ cimport numpy as np
+ from .common cimport pywt_index_t
+ from ._pywt cimport c_wavelet_from_object, cdata_t, Wavelet, _check_dtype
+
+-
+ include "config.pxi"
+
++np.import_array()
++
++
+ def swt_max_level(size_t input_len):
+     """
+     swt_max_level(input_len)
+
+From 47bcf24faef6a7b6de74859df47e4b1d8297b193 Mon Sep 17 00:00:00 2001
+From: Gregory Lee <grlee77@gmail.com>
+Date: Sat, 18 Apr 2020 08:53:33 -0400
+Subject: [PATCH 2/2] import_array() in _cwt.pyx as well
+
+remove duplicate numpy imports from _cwt.pxd
+---
+ pywt/_extensions/_cwt.pxd | 4 +---
+ pywt/_extensions/_cwt.pyx | 2 +-
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/pywt/_extensions/_cwt.pxd b/pywt/_extensions/_cwt.pxd
+index 3b5a4447..55c6697d 100644
+--- a/pywt/_extensions/_cwt.pxd
++++ b/pywt/_extensions/_cwt.pxd
+@@ -1,6 +1,4 @@
+ from ._pywt cimport ContinuousWavelet, data_t
+-cimport numpy as np
+-import numpy as np
+
+-cpdef cwt_psi_single(data_t[::1] data, ContinuousWavelet wavelet, size_t output_len)
+
++cpdef cwt_psi_single(data_t[::1] data, ContinuousWavelet wavelet, size_t output_len)
+diff --git a/pywt/_extensions/_cwt.pyx b/pywt/_extensions/_cwt.pyx
+index bd7fa852..039943ff 100644
+--- a/pywt/_extensions/_cwt.pyx
++++ b/pywt/_extensions/_cwt.pyx
+@@ -7,7 +7,7 @@ from ._pywt cimport _check_dtype
+ cimport numpy as np
+ import numpy as np
+
+-
++np.import_array()
+
+
+ cpdef cwt_psi_single(data_t[::1] data, ContinuousWavelet wavelet, size_t output_len):

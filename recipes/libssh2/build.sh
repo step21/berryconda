@@ -3,9 +3,14 @@
 # We use a repackaged cmake from elsewhere to break a build cycle.
 export PATH=${PREFIX}/cmake-bin/bin:${PATH}
 
+if [[ $target_platform =~ linux.* ]]; then
+  export LDFLAGS="$LDFLAGS -Wl,-rpath-link,$PREFIX/lib"
+fi
+
 mkdir build && cd build
 
 cmake -D CMAKE_INSTALL_PREFIX=$PREFIX \
+      -D CMAKE_PREFIX_PATH=$PREFIX \
       -D BUILD_SHARED_LIBS=OFF \
       -D CRYPTO_BACKEND=OpenSSL \
       -D CMAKE_INSTALL_LIBDIR=lib \
@@ -17,6 +22,7 @@ make -j${CPU_COUNT}
 make install
 
 cmake -D CMAKE_INSTALL_PREFIX=$PREFIX \
+      -D CMAKE_PREFIX_PATH=$PREFIX \
       -D BUILD_SHARED_LIBS=ON \
       -D CRYPTO_BACKEND=OpenSSL \
       -D CMAKE_INSTALL_LIBDIR=lib \

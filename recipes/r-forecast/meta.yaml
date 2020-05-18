@@ -1,0 +1,105 @@
+{% set version = "8.12" %}
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-forecast
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/forecast_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/forecast/forecast_{{ version }}.tar.gz
+  sha256: eb607fd584d66abf39b14c00d50111304e892a6e0778c9a8354195c6c92f92f9
+
+build:
+  merge_build_host: true  # [win]
+  number: 0
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+requirements:
+  build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ compiler('cxx') }}            # [not win]
+    - {{ compiler('m2w64_cxx') }}      # [win]
+    - {{posix}}filesystem        # [win]
+    - {{posix}}make
+    - {{posix}}sed               # [win]
+    - {{posix}}coreutils         # [win]
+    - {{posix}}zip               # [win]
+  host:
+    - libblas
+    - r-base
+    - r-rcpp >=0.11.0
+    - r-rcpparmadillo >=0.2.35
+    - r-colorspace
+    - r-fracdiff
+    - r-ggplot2 >=2.2.1
+    - r-lmtest
+    - r-magrittr
+    - r-nnet
+    - r-timedate
+    - r-tseries
+    - r-urca
+    - r-zoo
+  run:
+    - r-base
+    - {{native}}gcc-libs         # [win]
+    - r-rcpp >=0.11.0
+    - r-rcpparmadillo >=0.2.35
+    - r-colorspace
+    - r-fracdiff
+    - r-ggplot2 >=2.2.1
+    - r-lmtest
+    - r-magrittr
+    - r-nnet
+    - r-timedate
+    - r-tseries
+    - r-urca
+    - r-zoo
+
+test:
+  commands:
+    - $R -e "library('forecast')"           # [not win]
+    - "\"%R%\" -e \"library('forecast')\""  # [win]
+
+about:
+  home: http://pkg.robjhyndman.com/forecast, https://github.com/robjhyndman/forecast
+  license: GPL-3.0-only
+  summary: Methods and tools for displaying and analysing univariate time series forecasts including exponential smoothing via state space models and automatic ARIMA
+    modelling.
+  license_family: GPL3
+  license_file:
+    - {{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-3
+
+extra:
+  recipe-maintainers:
+    - conda-forge/r
+    - philip-khor
+
+# Package: forecast
+# Version: 8.9
+# Title: Forecasting Functions for Time Series and Linear Models
+# Description: Methods and tools for displaying and analysing univariate time series forecasts including exponential smoothing via state space models and automatic ARIMA modelling.
+# Depends: R (>= 3.0.2),
+# Imports: colorspace, fracdiff, ggplot2 (>= 2.2.1), graphics, lmtest, magrittr, nnet, parallel, Rcpp (>= 0.11.0), stats, timeDate, tseries, urca, zoo
+# Suggests: uroot, knitr, rmarkdown, rticles, testthat, methods
+# LinkingTo: Rcpp (>= 0.11.0), RcppArmadillo (>= 0.2.35)
+# LazyData: yes
+# ByteCompile: TRUE
+# Authors@R: c( person("Rob", "Hyndman", email="Rob.Hyndman@monash.edu", role=c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-2140-5352")), person("George", "Athanasopoulos", role='aut'), person("Christoph", "Bergmeir", role="aut", comment = c(ORCID = "0000-0002-3665-9021")), person("Gabriel", "Caceres", role="aut"), person("Leanne", "Chhay", role='aut'), person("Mitchell", "O'Hara-Wild", role="aut", comment=c(ORCID = "0000-0001-6729-7695")), person("Fotios", "Petropoulos", role='aut', comment=c(ORCID = "0000-0003-3039-4955")), person("Slava", "Razbash", role="aut"), person("Earo", "Wang", role="aut"), person("Farah", "Yasmeen", role='aut', comment=c(ORCID="0000-0002-1479-5401")), person("R Core Team", role=c('ctb','cph')), person("Ross", "Ihaka", role=c('ctb','cph')), person("Daniel", "Reid", role='ctb'), person("David", "Shaub", role='ctb'), person("Yuan", "Tang", role='ctb', comment = c(ORCID = "0000-0001-5243-233X")), person("Zhenyu","Zhou", role='ctb') )
+# BugReports: https://github.com/robjhyndman/forecast/issues
+# License: GPL-3
+# URL: http://pkg.robjhyndman.com/forecast, https://github.com/robjhyndman/forecast
+# VignetteBuilder: knitr
+# Encoding: UTF-8
+# RoxygenNote: 6.1.1
+# NeedsCompilation: yes
+# Packaged: 2019-08-22 03:02:51 UTC; hyndman
+# Author: Rob Hyndman [aut, cre, cph] (<https://orcid.org/0000-0002-2140-5352>), George Athanasopoulos [aut], Christoph Bergmeir [aut] (<https://orcid.org/0000-0002-3665-9021>), Gabriel Caceres [aut], Leanne Chhay [aut], Mitchell O'Hara-Wild [aut] (<https://orcid.org/0000-0001-6729-7695>), Fotios Petropoulos [aut] (<https://orcid.org/0000-0003-3039-4955>), Slava Razbash [aut], Earo Wang [aut], Farah Yasmeen [aut] (<https://orcid.org/0000-0002-1479-5401>), R Core Team [ctb, cph], Ross Ihaka [ctb, cph], Daniel Reid [ctb], David Shaub [ctb], Yuan Tang [ctb] (<https://orcid.org/0000-0001-5243-233X>), Zhenyu Zhou [ctb]
+# Maintainer: Rob Hyndman <Rob.Hyndman@monash.edu>
+# Repository: CRAN
+# Date/Publication: 2019-08-22 11:50:02 UTC

@@ -1,4 +1,4 @@
-{% set version = "2.3.1" %}
+{% set version = "2.9.2" %}
 
 package:
   name: cryptography-vectors
@@ -6,11 +6,12 @@ package:
 
 source:
   url: https://pypi.io/packages/source/c/cryptography_vectors/cryptography_vectors-{{ version }}.tar.gz
-  sha256: bf4d9b61dce69c49e830950aa36fad194706463b0b6dfe81425b9e0bc6644d46
+  sha256: 99ac91c4d89572399b097240809af1b8f67f4bedf43398d290c9b2b3d9f491b4
 
 build:
   number: 0
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv
 
 requirements:
   host:
@@ -25,8 +26,8 @@ test:
 
 about:
   home: https://github.com/pyca/cryptography
-  license: Apache 2.0 or BSD 3-Clause
-  #license_file: ??? TWO LICENSE FILES ???
+  license: BSD-3-Clause (or Apache 2.0)
+  license_file: LICENSE.BSD
   summary: Test vectors for the cryptography package.
   dev_url: https://github.com/pyca/cryptography/tree/master/vectors
   doc_url: https://cryptography.io

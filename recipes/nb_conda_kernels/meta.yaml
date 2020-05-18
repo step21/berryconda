@@ -1,4 +1,4 @@
-{% set version = "2.1.1" %}
+{% set version = "2.2.3" %}
 
 package:
   name: nb_conda_kernels
@@ -6,13 +6,13 @@ package:
 
 source:
   url: https://github.com/Anaconda-Platform/nb_conda_kernels/archive/{{ version }}.tar.gz
-  sha256: 71a3cf565eb1183ab0992d6364907c9bf063cdd3d7b4c287b3c44fa6dce9c69f
+  sha256: 102b57adbf7ea1361e0df4402cdc10ac07c8bd7facfbe776427c75b12d37dc72
 
 build:
-  number: 1
+  number: 0
 
 requirements:
-  build:
+  host:
     - python
     - pip
   run:
@@ -20,6 +20,10 @@ requirements:
     - notebook >=4.2.0
 
 test:
+  requires:
+    - pip
+  commands:
+    - pip check
   imports:
     - nb_conda_kernels
 
@@ -27,7 +31,7 @@ about:
   home: https://github.com/Anaconda-Platform/nb_conda_kernels
   license: BSD 3-Clause
   license_file: LICENSE
-  summary: 'Launch Jupyter kernels for any installed conda environment'
+  summary: Launch Jupyter kernels for any installed conda environment
 
 extra:
   recipe-maintainers:

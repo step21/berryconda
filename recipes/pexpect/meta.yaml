@@ -1,4 +1,4 @@
-{% set version = "4.6.0" %}
+{% set version = "4.8.0" %}
 
 package:
   name: pexpect
@@ -6,11 +6,11 @@ package:
 
 source:
   url: https://pypi.io/packages/source/p/pexpect/pexpect-{{ version }}.tar.gz
-  sha256: 2a8e88259839571d1251d278476f3eec5db26deb73a70be5ed5dc5435e418aba
+  sha256: fc65a43959d153d0114afe13997d439c22823a27cefceb5ff35c2178c6784c0c
 
 build:
-  number: 0
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  number: 1
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
   build:
@@ -18,7 +18,7 @@ requirements:
     - pip
   run:
     - python
-    - ptyprocess  # [not win]
+    - ptyprocess >=0.5  # [not win]
 
 test:
   imports:

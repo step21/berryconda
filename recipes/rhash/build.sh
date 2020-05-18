@@ -1,10 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
-make ADDCFLAGS="${CFLAGS}" ADDLDFLAGS="${LDFLAGS}" build-shared
+set -x
 
-make PREFIX="" DESTDIR=${PREFIX} install-shared
-
-make -C librhash PREFIX="" DESTDIR=${PREFIX} install-headers install-lib-shared install-lib-static
-
-cd tests
-./test_rhash.sh
+./configure --prefix=${PREFIX} --extra-cflags="${CFLAGS}" --extra-ldflags="${LDFLAGS}" --disable-openssl
+make -j${CPU_COUNT}
+make install
+make -C librhash install-headers install-so-link

@@ -1,30 +1,26 @@
-{% set version = "1.0.16" %}
+{% set version = "1.0.18" %}
 
 package:
   name: libsodium
   version: {{ version }}
 
 source:
-  fn: libsodium-{{ version }}.tar.gz
-  url: https://github.com/jedisct1/libsodium/releases/download/{{ version }}/libsodium-{{ version }}.tar.gz
-  sha256: eeadc7e1e1bcef09680fb4837d448fbdf57224978f865ac1c16745868fbd0533
+  url: https://download.libsodium.org/libsodium/releases/libsodium-{{ version }}.tar.gz
+  sha256: 6f504490b342a4f8a4c4a02fc9b866cbef8622d5df4e5452b46be121e46636c1
 
 build:
-  skip: true  # [win and py>35]
   number: 0
-  features:
-    - vc9     # [win and py27]
-    - vc10    # [win and py34]
-    - vc14    # [win and py>=35]
+  run_exports:
+    # libsodium can bump its ABI version in patch releases,
+    # so we have to pin it down
+    - {{ pin_subpackage("libsodium", max_pin="x.x.x") }}
 
 requirements:
   build:
-    - python      # [win]
-    - msinttypes  # [win and py27]
-  run:
-    - vc 9   # [win and py27]
-    - vc 10  # [win and py34]
-    - vc 14  # [win and py>=35]
+    - {{ compiler('c') }}
+    - make
+  host:
+    - msinttypes  # [win and vc<14]
 
 test:
   commands:

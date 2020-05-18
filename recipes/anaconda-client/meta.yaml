@@ -1,6 +1,6 @@
 {% set name = "anaconda-client" %}
-{% set version = "1.7.1" %}
-{% set checksum = "9f1d1e9dbf7f85de0ff2d6f64f1fcabd89d9b4886abc549067599f7ae4929c37" %}
+{% set version = "1.7.2" %}
+{% set checksum = "839bc07d5e3b9069180ad9c78bfb0b74ab7b4ccac9523a5b9d1d8aa0b154bab5" %}
 
 package:
   name: {{ name }}
@@ -59,7 +59,10 @@ about:
   license: BSD 3-Clause
   license_file: LICENSE.md
   summary: Anaconda Cloud command line client library
+  doc_url: https://docs.anaconda.com/anaconda-cloud/user-guide/getting-started/
+  dev_url: https://github.com/Anaconda-Platform/anaconda-client
 
 extra:
   recipe-maintainers:
     - jakirkham
+    - goanpeca

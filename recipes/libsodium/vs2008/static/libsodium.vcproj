@@ -489,11 +489,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\src\libsodium\include\sodium\crypto_scalarmult_ristretto255.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\src\libsodium\include\sodium\crypto_pwhash.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\..\..\src\libsodium\include\sodium\crypto_pwhash_argon2i.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\libsodium\include\sodium\randombytes_internal_random.h"
 				>
 			</File>
 			<File
@@ -597,6 +605,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\src\libsodium\include\sodium\crypto_core_ristretto255.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\src\libsodium\crypto_scalarmult\curve25519\sandy2x\curve25519_sandy2x.h"
 				>
 			</File>
@@ -686,14 +698,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\src\libsodium\include\sodium\randombytes.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\src\libsodium\include\sodium\randombytes_nativeclient.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\src\libsodium\include\sodium\randombytes_salsa20_random.h"
 				>
 			</File>
 			<File
@@ -913,6 +917,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\src\libsodium\crypto_core\ed25519\core_ristretto255.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\src\libsodium\crypto_core\hchacha20\core_hchacha20.c"
 				>
 			</File>
@@ -970,6 +978,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\src\libsodium\crypto_scalarmult\crypto_scalarmult.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\libsodium\crypto_scalarmult\ristretto255\ref10\scalarmult_ristretto255_ref10.c"
 				>
 			</File>
 			<File
@@ -1093,11 +1105,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\libsodium\randombytes\nativeclient\randombytes_nativeclient.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\src\libsodium\randombytes\salsa20\randombytes_salsa20_random.c"
+				RelativePath="..\..\..\..\src\libsodium\randombytes\internal\randombytes_internal_random.c"
 				>
 			</File>
 			<File

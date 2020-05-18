@@ -1,0 +1,48 @@
+From 2fc27cd0ffd04d18b18cf8bd97caf90a06e2f688 Mon Sep 17 00:00:00 2001
+From: Isuru Fernando <isuruf@gmail.com>
+Date: Wed, 4 Mar 2020 12:14:21 -0600
+Subject: [PATCH 1/2] Keep python pinning in hashing if there's a space
+
+---
+ conda_build/metadata.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/conda_build/metadata.py b/conda_build/metadata.py
+index b64296f9e..fb41c6ddb 100644
+--- a/conda_build/metadata.py
++++ b/conda_build/metadata.py
+@@ -1261,7 +1261,8 @@ def get_hash_contents(self):
+         if build_string_excludes:
+             exclude_pattern = re.compile('|'.join('{}[\s$]?.*'.format(exc)
+                                                   for exc in build_string_excludes))
+-            dependencies = [req for req in dependencies if not exclude_pattern.match(req)]
++            dependencies = [req for req in dependencies if not exclude_pattern.match(req) and
++                                ' ' not in self.config.variant[req]]
+ 
+         # retrieve values - this dictionary is what makes up the hash.
+         return {key: self.config.variant[key] for key in dependencies}
+
+From 4660e913561cbfd7cab7425c0baa0ab57e449766 Mon Sep 17 00:00:00 2001
+From: Isuru Fernando <isuruf@gmail.com>
+Date: Wed, 4 Mar 2020 12:53:02 -0600
+Subject: [PATCH 2/2] Fix logic
+
+---
+ conda_build/metadata.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/conda_build/metadata.py b/conda_build/metadata.py
+index fb41c6ddb..73bf29223 100644
+--- a/conda_build/metadata.py
++++ b/conda_build/metadata.py
+@@ -1261,8 +1261,8 @@ def get_hash_contents(self):
+         if build_string_excludes:
+             exclude_pattern = re.compile('|'.join('{}[\s$]?.*'.format(exc)
+                                                   for exc in build_string_excludes))
+-            dependencies = [req for req in dependencies if not exclude_pattern.match(req) and
+-                                ' ' not in self.config.variant[req]]
++            dependencies = [req for req in dependencies if not exclude_pattern.match(req) or
++                                ' ' in self.config.variant[req]]
+ 
+         # retrieve values - this dictionary is what makes up the hash.
+         return {key: self.config.variant[key] for key in dependencies}

@@ -1,29 +1,22 @@
-{%set name = "click" %}
-{%set version = "6.7" %}
-{%set compress_type = "tar.gz" %}
-{%set hash_type = "sha256" %}
-{%set hash_val = "f15516df478d5a56180fbf80e68f206010e6d160fc39fa508b65e035fd75130b" %}
-{%set build_num = "1" %}
+{% set version = "7.1.1" %}
 
 package:
-  name: {{ name|lower }}
+  name: click
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.{{ compress_type }}
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ compress_type }}
-  {{ hash_type }}: {{ hash_val }}
+  url: https://pypi.io/packages/source/c/click/click-{{ version }}.tar.gz
+  sha256: 8a18b4ea89d8820c5d0c7da8a64b2c324b4dabb695804dbfea19b9be9d88c0cc
 
 build:
-  number: {{ build_num }}
+  number: 0
   noarch: python
-  script: python setup.py install --single-version-externally-managed --record=record.txt
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
 
 requirements:
-  build:
+  host:
     - python
-    - setuptools
-
+    - pip
   run:
     - python
 
@@ -32,14 +25,16 @@ test:
     - click
 
 about:
-  home: http://click.pocoo.org/
-  license: BSD 3-Clause
-  license_file: LICENSE
+  home: https://palletsprojects.com/p/click
+  license: BSD-3-Clause
+  license_file: LICENSE.rst
   license_family: BSD
-  summary: 'A simple wrapper around optparse for powerful command line utilities.'
+  summary: Python composable command line interface toolkit
   dev_url: https://github.com/pallets/click
-  doc_url: http://click.pocoo.org/
+  doc_url: https://click.palletsprojects.com
 
 extra:
   recipe-maintainers:
     - pmlandwehr
+    - ocefpaf
+    - xylar

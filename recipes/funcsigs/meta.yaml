@@ -1,39 +1,37 @@
 {% set name = "funcsigs" %}
 {% set version = "1.0.2" %}
-{% set checksum = "a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50" %}
 
 package:
   name: {{ name }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: {{ checksum }}
+  sha256: a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50
 
 build:
-  number: 2
+  number: 3
   noarch: python
-  script: python setup.py install --single-version-externally-managed --record=record.txt
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
-  build:
+  host:
     - python
-    - setuptools
-
+    - pip
   run:
     - python
 
 test:
   imports:
-    - {{ name }}
+    - funcsigs
 
 about:
   home: http://funcsigs.readthedocs.org
-  license: Apache 2.0
+  license: Apache-2.0
   license_file: LICENSE
   summary: Python function signatures from PEP362 for Python 2.6, 2.7 and 3.2+.
 
 extra:
   recipe-maintainers:
     - jakirkham
+    - carlodri

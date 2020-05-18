@@ -12,15 +12,16 @@ source:
   sha256: ea202c17c85b0a1059698ba0b1005c5382ad1340bb6b6ffa464ed0e3781a923b
 
 build:
-  number: 0
+  number: 2
   script:
-    - python setup.py install --single-version-externally-managed --record=record.txt
+    - "{{ PYTHON }} -m pip install . --no-deps -vv"
     - jupyter nbextension install nb_conda --py --sys-prefix --overwrite
 
 requirements:
-  build:
+  host:
     - python
     - setuptools
+    - pip
     - notebook >=4.3.1
 
   run:
@@ -35,6 +36,8 @@ test:
 about:
   home: https://github.com/{{ gh_org }}/{{ gh_repo }}
   license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
   summary: Conda environment and package access extension from within Jupyter
 
 extra:
@@ -42,3 +45,4 @@ extra:
     - bollwyvl
     - damianavila
     - fjcapdevila
+    - xylar

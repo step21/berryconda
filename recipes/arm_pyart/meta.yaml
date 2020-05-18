@@ -1,6 +1,6 @@
 {% set name = "arm_pyart" %}
-{% set version = "1.8.0" %}
-{% set sha256 = "b68ac9cb70b357ded1173a84a44883c3348b335fbb674f6c2e5b654171a1c9d7" %}
+{% set version = "1.11.1" %}
+{% set sha256 = "74d7196bf54fb5431a576854a814b0844d0cf6d59d2a692557bab7482adf304e" %}
 
 package:
   name: {{ name|lower }}
@@ -12,18 +12,27 @@ source:
   sha256: {{ sha256 }}
 
 build:
-    number: 0
+    number: 1
+    script:  # [not win]
+      - export RSL_PATH=$PREFIX  # [not win]
+      - "{{ PYTHON }} -m pip install . --no-deps -vvv"  # [not win]
 
 requirements:
     build:
+        - {{ compiler('c') }}
+    host:
         - python
-        - numpy 1.11.*
+        - pip
+        - numpy
+        - trmm_rsl  # [not win]
     run:
         - python
-        - numpy >=1.11
+        - {{ pin_compatible('numpy') }}
         - scipy
-        - matplotlib
+        - matplotlib-base
         - netcdf4
+        - xarray
+        - trmm_rsl  # [not win]
 
 test:
     imports:
@@ -32,4 +41,23 @@ test:
 about:
     home: http://arm-doe.github.io/pyart/
     license: BSD-3-Clause
+    license_family: BSD
+    license_file: LICENSE.txt
     summary: "Python ARM Radar Toolkit"
+    description: |
+      The Python ARM Radar Toolkit, Py-ART, is an open source Python
+      module containing a growing collection of weather radar algorithms
+      and utilities build on top of the Scientific Python stack and
+      distributed under the 3-Clause BSD license. Py-ART is used by the
+      Atmospheric Radiation Measurement (ARM) Climate Research Facility for
+      working with data from a number of precipitation and cloud radars, but
+      has been designed so that it can be used by others in the radar and
+      atmospheric communities to examine, process, and analyze data from many
+      types of weather radars.
+    doc_url: https://arm-doe.github.io/pyart/
+    dev_url: http://arm-doe.github.io/pyart-docs-travis/dev_reference/index.html
+
+extra:
+    recipe-maintainers:
+        - jjhelmus
+        - zssherman

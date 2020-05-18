@@ -1,6 +1,6 @@
 {% set name = "zeromq" %}
-{% set version = "4.2.5" %}
-{% set sha256 = "cc9090ba35713d59bb2f7d7965f877036c49c5558ea0c290b0dcc6f2a17e489f" %}
+{% set version = "4.3.2" %}
+{% set sha256 = "ebd7b5c830d6428956b67a0454a7f8cbed1de74b3b01e5c33c5378e22740f763" %}
 
 package:
   name: {{ name|lower }}
@@ -16,26 +16,24 @@ source:
     - 0005-osx-test.patch  # [osx]
 
 build:
-  number: 5
+  number: 2
   run_exports:
-    # ZeroMQ have a terribe track record of SONAME management between minor
-    # versions and across the two supported build systems unfortunately.
-    #    https://abi-laboratory.pro/tracker/timeline/zeromq/
-    - {{ pin_subpackage('zeromq', max_pin='x.x.x') }}
+    - {{ pin_subpackage(name, max_pin='x.x') }}  # [not win]
+    # Windows DLLs have x.y.z in filename
+    - {{ pin_subpackage(name, max_pin='x.x.x') }}  # [win]
 
 requirements:
   build:
-    - automake                     # [osx]
-    - autoconf                     # [osx]
+    - automake                     # [unix]
+    - autoconf                     # [unix]
+    - make                         # [unix]
     - cmake                        # [win]
-    - libtool                      # [osx]
+    - libtool                      # [unix]
     - pkg-config                   # [unix]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
-    - libsodium  # [not (win and vc<14)]
-    # need non-empty host to trigger the right cb3 behavior
-    - vc  # [win and vc<14]
+    - libsodium
   run:
     - libsodium
 
@@ -63,6 +61,7 @@ test:
 about:
   home: http://zeromq.org
   license: LGPL 3
+  license_file: COPYING.LESSER
   summary: A high-performance asynchronous messaging library.
 
 extra:

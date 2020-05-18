@@ -1,19 +1,59 @@
 #!/bin/bash
 
-case `uname -m` in
-  'armv7l' )
-    TARGET=ARMV7
-    ;;
-  'armv6l' )
-    TARGET=ARMV6
-    ;;
-  * )
-    TARGET=NEHALEM
-    ;;
-esac
+# Fix ctest not automatically discovering tests
+LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
 
-OPTS="USE_THREAD=1 NO_LAPACK=0 TARGET=$TARGET NO_STATIC=1"
+# See this workaround
+# ( https://github.com/xianyi/OpenBLAS/issues/818#issuecomment-207365134 ).
+CF="${CFLAGS}"
+unset CFLAGS
 
-make FC=gfortran $OPTS -j$CPU_COUNT
-OPENBLAS_NUM_THREADS=$CPU_COUNT make test
-make PREFIX=$PREFIX $OPTS install
+# silly if statement but makes things clear
+if [[ "${target_platform}" == "osx-64" ]]; then
+    USE_OPENMP="1"
+elif [[ "${target_platform}" == linux-* ]]; then
+    # We will have to build with GNU and then use LLVM on run
+    USE_OPENMP="1"
+fi
+
+if [[ "$USE_OPENMP" == "1" ]]; then
+    # Run the the fork test
+    sed -i.bak 's/test_potrs.o/test_potrs.o test_fork.o/g' utest/Makefile
+fi
+
+if [ ! -z "$FFLAGS" ]; then
+    export FFLAGS="${FFLAGS/-fopenmp/ }";
+fi
+export FFLAGS="${FFLAGS} -frecursive"
+
+# Because -Wno-missing-include-dirs does not work with gfortran:
+[[ -d "${PREFIX}"/include ]] || mkdir "${PREFIX}"/include
+[[ -d "${PREFIX}"/lib ]] || mkdir "${PREFIX}"/lib
+
+# Set CPU Target
+if [[ "${target_platform}" == linux-aarch64 ]]; then
+  TARGET="ARMV8"
+  BINARY="64"
+elif [[ "${target_platform}" == linux-ppc64le ]]; then
+  TARGET="POWER8"
+  BINARY="64"
+elif [[ "${target_platform}" == *-64 ]]; then
+  TARGET="PRESCOTT"
+  BINARY="64"
+fi
+
+QUIET_MAKE=0
+if [[ "$CI" == "travis" ]]; then
+  QUIET_MAKE=1
+fi
+
+# Build all CPU targets and allow dynamic configuration
+# Build LAPACK.
+# Enable threading. This can be controlled to a certain number by
+# setting OPENBLAS_NUM_THREADS before loading the library.
+# Tests are run as part of build
+make QUIET_MAKE=${QUIET_MAKE} DYNAMIC_ARCH=1 BINARY=${BINARY} NO_LAPACK=0 CFLAGS="${CF}" \
+     HOST=${HOST} TARGET=${TARGET} CROSS_SUFFIX="${HOST}-" \
+     NO_AFFINITY=1 USE_THREAD=1 NUM_THREADS=128 USE_OPENMP="${USE_OPENMP}" \
+     INTERFACE64=${INTERFACE64} SYMBOLSUFFIX=${SYMBOLSUFFIX}
+make install PREFIX="${PREFIX}"

@@ -1,4 +1,4 @@
-{% set version = "5.2.4" %}
+{% set version = "5.2.5" %}
 
 package:
   name: xz
@@ -6,13 +6,13 @@ package:
 
 source:
   url: http://downloads.sourceforge.net/project/lzmautils/xz-{{ version }}.tar.bz2
-  sha256: 3313fd2a95f43d88e44264e6b015e7d03053e681860b0d5d3f9baca79c57b7bf
+  sha256: 5117f930900b341493827d63aa910ff5e011e0b994197c3b71c08a20228a42df
   patches:
     - 0001-Add-vs2008-support-via-cmake.patch
     - 0002-Add-gettimeofday-for-VS2008.patch
 
 build:
-  number: 1
+  number: 0
   run_exports:
     # XZ's track record of backcompat is very good.  Keep default pins (next major version)
     #    https://abi-laboratory.pro/tracker/timeline/xz/
@@ -23,6 +23,7 @@ requirements:
     - {{ compiler('c') }}
     - c99-to-c89  # [win and vc<14]
     - cmake  # [win]
+    - ninja  # [win]
     - make  # [not win]
     - automake  # [not win]
   host:

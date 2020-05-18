@@ -1,0 +1,9 @@
+--- a/libffi.pc.in	2020-03-10 18:10:51.807590546 -0400
++++ b/libffi.pc.in	2020-03-11 17:40:04.336183407 -0400
+@@ -7,5 +7,5 @@
+ Name: @PACKAGE_NAME@
+ Description: Library supporting Foreign Function Interfaces
+ Version: @PACKAGE_VERSION@
+-Libs: -L${toolexeclibdir} -lffi
++Libs: -L${toolexeclibdir} -llibffi
+ Cflags: -I${includedir}

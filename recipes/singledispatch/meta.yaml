@@ -1,4 +1,4 @@
-{% set version="3.4.0.3" %}
+{% set version = "3.4.0.3" %}
 
 package:
   name: singledispatch
@@ -10,7 +10,7 @@ source:
   md5: af2fc6a3d6cc5a02d0bf54d909785fcb
 
 build:
-  number: 0
+  number: 1000
   script: python setup.py install --single-version-externally-managed --record=record.txt
 
 requirements:

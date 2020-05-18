@@ -1,6 +1,4 @@
-{% set version = "1.15.1" %}
-{% set build = 1 %}
-{% set sha256 = "988e32527abe052307d21c8ca000aa238b914df363a617e38f4fb89f5abf6260" %}
+{% set version = "1.16.2" %}
 
 package:
   name: automake
@@ -8,10 +6,10 @@ package:
 
 source:
   url: http://ftp.gnu.org/gnu/automake/automake-{{ version }}.tar.gz
-  sha256: {{ sha256 }}
+  sha256: b2f361094b410b4acbf4efba7337bdb786335ca09eb2518635a09fb7319ca5c1
 
 build:
-  number: {{ build }}
+  number: 0
   skip: true  # [win]
 
 requirements:
@@ -19,6 +17,7 @@ requirements:
     - m4
     - autoconf
     - perl
+    - make
   run:
     - m4
     - autoconf
@@ -30,14 +29,19 @@ test:
 
 about:
   home: http://www.gnu.org/software/automake/
-  license: GPL-2.0
-  license_family: GPL
+  license: GPL 3
   license_file: COPYING
-  summary: >
-             Tool for automatically generating Makefile.in files compliant with
-             the GNU Coding Standards.
+  summary: Tool for automatically generating Makefile.in files compliant with the GNU Coding Standards.
+  description: |
+    Automake is a tool for automatically generating Makefile.ins from files
+    called Makefile.am.  It assumes that the project uses Autoconf and enforces
+    certain restrictions on the configure.ac contents.
+  dev_url: https://git.savannah.gnu.org/git/automake.git
+  doc_url: https://www.gnu.org/software/automake/manual/automake.html
+  doc_source_url: http://git.savannah.gnu.org/cgit/automake.git/tree/doc
 
 extra:
   recipe-maintainers:
     - jakirkham
     - ocefpaf
+    - mingwandroid

@@ -1,5 +1,5 @@
-{% set version = "1.9.0" %}
-{% set sha256 = "44975e209c4827fc18a3486f257154d34ec6eaec0f90fef0cca1caa482db7064" %}
+{% set version = "1.10.0" %}
+{% set sha256 = "4d4631f6062e658e9007ab3149a9b914f3548cb38bfb021c64f39a025ce578ae" %}
 
 package:
   name: scandir
@@ -11,8 +11,8 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 0
-  script: python -m pip install --no-deps --ignore-installed .
+  number: 1
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 requirements:
   build:

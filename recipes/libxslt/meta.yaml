@@ -1,4 +1,4 @@
-{% set version = "1.1.32" %}
+{% set version = "1.1.33" %}
 
 package:
   name: libxslt
@@ -6,10 +6,10 @@ package:
 
 source:
   url: ftp://xmlsoft.org/libxml2/libxslt-{{ version }}.tar.gz
-  sha256: 526ecd0abaf4a7789041622c3950c0e7f2c4c8835471515fd77eec684a355460
+  sha256: 8e36605144409df979cab43d835002f63988f3dc94d5d3537c12796db90e38c8
 
 build:
-  number: 2
+  number: 0
   run_exports:
     # forward compatible: https://abi-laboratory.pro/tracker/timeline/libxslt/
     - {{ pin_subpackage('libxslt') }}
@@ -21,15 +21,10 @@ requirements:
   host:
     - icu  # [not win]
     - libxml2
-  run:
-    - icu  # [not win]
-    - libxml2
 
 test:
   commands:
     - xsltproc --version
-    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
-    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
 
 about:
   home: http://xmlsoft.org/XSLT/
@@ -48,3 +43,4 @@ about:
 extra:
   recipe-maintainers:
     - ocefpaf
+    - scopatz

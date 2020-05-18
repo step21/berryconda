@@ -1,4 +1,4 @@
-{% set version = "2.2.5" %}
+{% set version = "2.2.9" %}
 {% set ver = version|replace(".", "_") %}
 
 package:
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/libexpat/libexpat/releases/download/R_{{ ver }}/expat-{{ version }}.tar.bz2
-  sha256: d9dc32efba7e74f788fcc4f212a43216fc37cf5f23f4c2339664d473353aedf6
+  sha256: f1063084dc4302a427dabcca499c8312b3a32a29b7d2506653ecc8f950a9a237
 
 build:
   number: 2
@@ -19,6 +19,7 @@ build:
 requirements:
   build:
     - cmake  # [win]
+    - make  # [unix]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
@@ -31,6 +32,7 @@ test:
 about:
   home: http://expat.sourceforge.net/
   license: MIT
+  license_family: MIT
   license_file: COPYING
   summary: 'Expat XML parser library in C'
 
@@ -41,3 +43,4 @@ extra:
     - pelson
     - mingwandroid
     - msarahan
+    - scopatz

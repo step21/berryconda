@@ -1,4 +1,4 @@
-{% set version = "3.6.6" %}
+{% set version = "3.7.4.1" %}
 
 package:
   name: typing
@@ -6,12 +6,12 @@ package:
 
 source:
   url: https://pypi.io/packages/source/t/typing/typing-{{ version }}.tar.gz
-  sha256: 4027c5f6127a6267a435201981ba156de91ad0d1d98e9ddc2aa173453453492d
+  sha256: 91dfe6f3f706ee8cc32d38edbbf304e9b7583fb37108fef38229617f8b3eba23
 
 build:
-  number: 0
+  number: 1
   skip: True  # [py>=36]
-  script: python -m pip install --no-deps --ignore-installed .
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 requirements:
   build:

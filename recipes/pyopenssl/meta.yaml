@@ -1,4 +1,4 @@
-{% set version = "18.0.0" %}
+{% set version = "19.1.0" %}
 
 package:
   name: pyopenssl
@@ -6,11 +6,12 @@ package:
 
 source:
   url: https://pypi.io/packages/source/p/pyOpenSSL/pyOpenSSL-{{ version }}.tar.gz
-  sha256: 6488f1423b00f73b7ad5167885312bb0ce410d3312eb212393795b53c8caa580
+  sha256: 9a24494b2602aaf402be5c9e30a0b82d4a5c67528fe8fb475e3f3bc00dd69507
 
 build:
-  number: 0
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  noarch: python
+  number: 1
+  script: "{{ PYTHON }} -m pip install . -vvv"
 
 requirements:
   host:
@@ -18,7 +19,7 @@ requirements:
     - pip
   run:
     - python
-    - cryptography >=2.2.1
+    - cryptography >=2.8
     - six >=1.5.2
 
 test:

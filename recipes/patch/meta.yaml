@@ -9,15 +9,18 @@ source:
   fn: {{ name }}-{{ version }}.tar.gz
   url: https://ftp.gnu.org/gnu/patch/patch-{{ version }}.tar.gz
   sha256: 8cf86e00ad3aaa6d26aca30640e86b0e3e1f395ed99f189b06d4c9f74bc58a4e
+  patches:
+    # TODO: Figure out why fedora/suse/debian don't need this
+    - 0001-Relax-open-fds-count-for-deep-directories.patch  # [linux]
 
 build:
-  number: 1
+  number: 1001
   skip: True  # [win]
 
 requirements:
   build:
     - {{ compiler('c') }}
-  host:
+    - make
 
 test:
   commands:

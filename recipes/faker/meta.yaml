@@ -1,56 +1,49 @@
-{% set name = "Faker" %}
-{% set version = "0.9.0" %}
-{% set bundle = "tar.gz" %}
-{% set hash_type = "sha256" %}
-{% set hash = "f6d67f04abfb2b4bea7afc7fa6c18cf4c523a67956e455668be9ae42bccc21ad" %}
+{% set version = "4.0.3" %}
 
 package:
-  name: {{ name|lower }}
+  name: faker
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ bundle }}
-  {{ hash_type }}: {{ hash }}
+  url: https://pypi.org/packages/source/F/Faker/Faker-{{ version }}.tar.gz
+  sha256: 7292806948ed848f1bcea1e7b963bae6f398687d1da0ea096e156fea2787f454
 
 build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
   entry_points:
     - faker = faker.cli:execute_from_command_line
-  number: 0
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
 
 requirements:
   host:
-    - python
+    - python >=3.4
     - pip
-
   run:
-    - python
+    - python >=3.4
     - python-dateutil >=2.4
-    - six >=1.10
-    - text-unidecode ==1.2
-    - ipaddress  # [py27]
+    - text-unidecode ==1.3
 
 test:
+  requires:
+    - pip
   files:
     - run_test.py
   commands:
-    - faker --help  # [osx]
-    - PYTHONIOENCODING=utf8 faker --help  # [linux]
+    - pip check
+    - PYTHONIOENCODING=utf8 faker --help  # [not win]
     - SET "PYTHONIOENCODING=utf8" & faker --help  # [win]
-  requires:
-    - email_validator >=1.0.0,<1.1.0
-    - ukpostcodeparser >=1.1.1
-    - mock
-
+  
 about:
   home: https://faker.readthedocs.io
   license: MIT
   license_family: MIT
   license_file: LICENSE.txt
-  summary: 'Faker is a Python package that generates fake data for you.'
+  summary: Faker is a Python package that generates fake data for you
   dev_url: https://github.com/joke2k/faker
   doc_url: https://faker.readthedocs.io
 
 extra:
   recipe-maintainers:
     - pmlandwehr
+    - ocefpaf

@@ -1,40 +1,46 @@
 {% set name = "pyflakes" %}
-{% set version = "2.0.0" %}
-{% set hash_type = "sha256" %}
-{% set hash_val = "9a7662ec724d0120012f6e29d6248ae3727d821bba522a0e6b356eff19126a49" %}
+{% set version = "2.2.0" %}
 
 package:
-  name: {{ name }}
+  name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  {{ hash_type }}: {{ hash_val }}
+  sha256: 35b2d75ee967ea93b55750aa9edbbf72813e06a66ba54438df2cfac9e3c27fc8
 
 build:
   number: 0
   noarch: python
-  script: python -m pip install --no-deps --ignore-installed .
+  script: {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - pyflakes = pyflakes.api:main
+
 
 requirements:
   build:
     - python
     - pip
-
   run:
     - python
 
 test:
   imports:
-    - {{ name }}
+    - pyflakes
+    - pyflakes.scripts
+  commands:
+    - pip check
+    - pyflakes --help
+  requires:
+    - pip
+
 
 about:
   home: https://github.com/PyCQA/pyflakes
   license: MIT
   license_family: MIT
   license_file: LICENSE
-  summary: 'Pyflakes analyzes programs and detects various errors.'
+  summary: Pyflakes analyzes programs and detects various errors.
   dev_url: https://github.com/PyCQA/pyflakes
 
 extra:

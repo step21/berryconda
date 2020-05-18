@@ -1,0 +1,55 @@
+From 84dd0f16eea44f10e1468b5130ef2556635a9a1c Mon Sep 17 00:00:00 2001
+From: Marcel Bargull <marcel.bargull@udo.edu>
+Date: Tue, 16 Jul 2019 21:34:45 +0200
+Subject: [PATCH] variants: remove hard-coded default path for
+ CONDA_BUILD_SYSROOT
+
+---
+ conda_build/variants.py              |  1 -
+ news/remove-default-variants-sysroot | 25 +++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+), 1 deletion(-)
+ create mode 100644 news/remove-default-variants-sysroot
+
+diff --git a/conda_build/variants.py b/conda_build/variants.py
+index 4ebcda040..d0761a377 100644
+--- a/conda_build/variants.py
++++ b/conda_build/variants.py
+@@ -33,7 +33,6 @@
+     'ignore_build_only_deps': ['python', 'numpy'],
+     'extend_keys': ['pin_run_as_build', 'ignore_version', 'ignore_build_only_deps', 'extend_keys'],
+     'cran_mirror': "https://cran.r-project.org",
+-    'CONDA_BUILD_SYSROOT': '/opt/MacOSX10.10.sdk',
+ }
+ 
+ # set this outside the initialization because of the dash in the key
+diff --git a/news/remove-default-variants-sysroot b/news/remove-default-variants-sysroot
+new file mode 100644
+index 000000000..4fdc781df
+--- /dev/null
++++ b/news/remove-default-variants-sysroot
+@@ -0,0 +1,25 @@
++Enhancements:
++-------------
++
++* <news item>
++
++Bug fixes:
++----------
++
++* variants: remove hard-coded default path for CONDA_BUILD_SYSROOT
++
++Deprecations:
++-------------
++
++* <news item>
++
++Docs:
++-----
++
++* <news item>
++
++Other:
++------
++
++* <news item>
++

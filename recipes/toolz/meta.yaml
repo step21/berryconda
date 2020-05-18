@@ -1,24 +1,22 @@
-{% set version = "0.9.0" %}
+{% set version = "0.10.0" %}
 
 package:
   name: toolz
   version: {{ version }}
 
 source:
-  fn: toolz-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/t/toolz/toolz-{{ version }}.tar.gz
-  sha256: 929f0a7ea7f61c178bd951bdae93920515d3fbdbafc8e6caf82d752b9b3b31c9
+  sha256: 08fdd5ef7c96480ad11c12d472de21acd32359996f69a5259299b540feba4560
 
 build:
   number: 0
   noarch: python
-  script: python -m pip install --no-deps --ignore-installed .
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
 
 requirements:
-  build:
+  host:
     - python
     - pip
-
   run:
     - python
 
@@ -26,13 +24,14 @@ test:
   imports:
     - toolz
     - toolz.curried
+    - toolz.functoolz
     - toolz.sandbox
 
 about:
   home: http://toolz.readthedocs.org/
   license: BSD 3-Clause
   license_file: LICENSE.txt
-  summary: A functional standard library for Python.
+  summary: A functional standard library for Python
 
 extra:
   recipe-maintainers:
@@ -40,3 +39,4 @@ extra:
     - eriknw
     - jcrist
     - jakirkham
+    - ocefpaf

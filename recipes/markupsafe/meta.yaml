@@ -1,4 +1,4 @@
-{% set version = "1.0" %}
+{% set version = "1.1.1" %}
 
 package:
   name: markupsafe
@@ -6,11 +6,11 @@ package:
 
 source:
   url: https://pypi.io/packages/source/M/MarkupSafe/MarkupSafe-{{ version }}.tar.gz
-  sha256: a6be69091dac236ea9c6bc7d012beab42010fa914c459791d627dad4910eb665
+  sha256: 29872e92839765e546828bb7754a68c418d927cd064fd4708fab9fe9c8bb116b
 
 build:
   number: 1
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
   build:
@@ -29,7 +29,7 @@ about:
   home: https://www.palletsprojects.com/p/markupsafe
   license: BSD-3-Clause
   license_family: BSD
-  license_file: LICENSE
+  license_file: LICENSE.rst
   summary: A Python module that implements the jinja2.Markup string
   dev_url: https://github.com/pallets/markupsafe
 

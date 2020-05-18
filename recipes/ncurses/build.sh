@@ -4,9 +4,11 @@
 for USE_WIDEC in false true;
 do
     WIDEC_OPT=""
+    w=""
     if [ "${USE_WIDEC}" = true ];
     then
         WIDEC_OPT="--enable-widec"
+        w="w"
     fi
 
     sh ./configure \
@@ -23,6 +25,14 @@ do
 	    --enable-pc-files \
 	    --with-termlib \
 	    $WIDEC_OPT
+
+    if [ "$(uname)" = Darwin ]
+    then
+        # When linking libncurses*.dylib, reexport libtinfo[w] so that later
+        # client code linking against just -lncurses[w] also gets -ltinfo[w].
+        sed -i.orig '/^SHLIB_LIST/s/-ltinfo/-Wl,-reexport&/' ncurses/Makefile
+    fi
+
     make -j ${CPU_COUNT}
     make install
     make clean
@@ -41,4 +51,14 @@ do
         mv "${HEADERS_DIR}/${HEADER}" "${PREFIX}/include/${HEADER}"
         ln -s "${PREFIX}/include/${HEADER}" "${HEADERS_DIR}/${HEADER}"
     done
+
+    if [ "$(uname)" != Darwin ]
+    then
+        # Replace the installed libncurses[w].so with a linker script
+        # so that linking against it also brings in -ltinfo[w].
+        DEVLIB=$PREFIX/lib/libncurses$w.so
+        RUNLIB=$(basename $(readlink $DEVLIB))
+        rm $DEVLIB
+        echo "INPUT($RUNLIB -ltinfo$w)" > $DEVLIB
+    fi
 done

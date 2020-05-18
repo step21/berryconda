@@ -1,31 +1,52 @@
-{% set version = "1.900.1" %}
+{% set version = "2.0.14" %}
 
 package:
   name: jasper
   version: {{ version }}
 
 source:
-  fn: jasper-{{ version }}.zip
-  url: http://www.ece.uvic.ca/~frodo/jasper/software/jasper-{{ version }}.zip
-  sha256: 6b905a9c2aca2e275544212666eefc4eb44d95d0a57e4305457b407fe63f9494
+  url: http://www.ece.uvic.ca/~frodo/jasper/software/jasper-{{ version }}.tar.gz
+  sha256: 2a1f61e55afe8b4ce8115e1508c5d7cb314d56dfcc2dd323f90c072f88ccf57b
+  patches:
+    - CVE-2018-9055-330751ce.patch
 
 build:
-  number: 5
-  skip: True  # [win]
+  number: 1
+  run_exports:
+    # no info.  Leaving at default behavior.
+    - {{ pin_subpackage('jasper') }}
+  missing_dso_whitelist:                                         # [osx]
+    - /System/Library/Frameworks/GLUT.framework/Versions/A/GLUT  # [osx]
 
 requirements:
   build:
-    - {{ compiler('c') }}
+    - {{ compiler('c') }}               # [not win]
+    - {{ cdt('mesa-libgl-devel') }}     # [not win and not aarch64]
+    - {{ cdt('mesa-dri-drivers') }}     # [not win and not aarch64]
+    - {{ cdt('libxdamage') }}           # [not win and not aarch64]
+    - {{ cdt('libselinux') }}           # [not win and not aarch64]
+    - {{ cdt('libxext') }}              # [not win and not aarch64]
+    - {{ cdt('libxfixes') }}            # [not win and not aarch64]
+    - {{ cdt('libxcb') }}               # [not win and not aarch64]
+    - {{ cdt('libxau') }}               # [not win and not aarch64]
+    - {{ cdt('libxi') }}                # [not win and not aarch64]
+    - {{ cdt('libxxf86vm') }}           # [not win and not aarch64]
+    - vs2017_win-64                     # [win64]
+    - cmake
+    - make
   host:
     - jpeg
+    - libglu                            # [linux64]
+    - freeglut                          # [linux64 or win]
   run:
     - jpeg
+    - {{ pin_compatible('libglu') }}    # [linux64]
+    - {{ pin_compatible('freeglut') }}  # [linux64 or win]
 
 test:
   commands:
+    - if not exist %LIBRARY_BIN%\\jasper.dll exit 1  # [win]
     - jasper --version
-    - conda inspect linkages -p $PREFIX jasper  # [not win]
-    - conda inspect objects -p $PREFIX jasper  # [osx]
 
 about:
   home: http://www.ece.uvic.ca/~frodo/jasper/
@@ -38,3 +59,4 @@ extra:
     - jakirkham
     - jhamman
     - ocefpaf
+    - seanyen

@@ -1,4 +1,4 @@
-{% set version = "0.9.0" %}
+{% set version = "0.11.1" %}
 
 package:
   name: statsmodels
@@ -6,36 +6,47 @@ package:
 
 source:
   url: https://pypi.io/packages/source/s/statsmodels/statsmodels-{{ version }}.tar.gz
-  sha256: 6461f93a842c649922c2c9a9bc9d9c4834110b89de8c4af196a791ab8f42ba3b
+  sha256: 5bde3fa0a35a91b45dba7cbc28270b5b649ff1d721c89290883f6e831672d5f0
 
 build:
-  number: 0
-  script: python setup.py install --single-version-externally-managed --record record.txt
+  number: 1
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+  skip: True  # [py2k]  
 
 requirements:
   build:
+    - {{ compiler('c') }}
+  host:
     - python
-    - setuptools
+    - pip
     - cython
-    - numpy 1.11.*
-    - scipy
-    - pandas
-    - patsy
+    - numpy =1.15  # [py<38]
+    - numpy =1.16  # [py>=38]
+    - scipy >=1.0
+    - pandas >=0.21
+    - patsy >=0.5.1
   run:
     - python
-    - numpy >=1.11
-    - scipy
-    - pandas
-    - patsy
+    - {{ pin_compatible('numpy') }}
+    - scipy >=1.0
+    - pandas >=0.21
+    - patsy >=0.5.1
 
 test:
+  requires:
+    - pip
+  commands:
+    - pip check
   imports:
     - statsmodels
 
 about:
   home: https://www.statsmodels.org
-  license: BSD 3-Clause
+  license: BSD-3-Clause
+  license_file: INSTALL.txt
   summary: 'Statistical computations and models for use with SciPy'
+  dev_url: https://github.com/statsmodels/statsmodels
+  doc_url: https://www.statsmodels.org/stable/
 
 extra:
   recipe-maintainers:

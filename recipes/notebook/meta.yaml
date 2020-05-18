@@ -1,4 +1,4 @@
-{% set version = "5.6.0" %}
+{% set version = "6.0.3" %}
 
 package:
   name: notebook
@@ -6,16 +6,19 @@ package:
 
 source:
   url: https://pypi.io/packages/source/n/notebook/notebook-{{ version }}.tar.gz
-  sha256: e2c8e931cc19db4f8c63e6a396efbc13a228b2cb5b2919df011b946f28239a08
+  sha256: 47a9092975c9e7965ada00b9a20f0cf637d001db60d241d479f53c0be117ad48
 
 build:
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
-  number: 1
+  script:
+    - "{{ PYTHON }} -m pip install . --no-deps -vv"
+    - find {{ PREFIX }} -name '*.js.map' -delete  # [not win]
+  number: 0
   entry_points:
     - jupyter-notebook = notebook.notebookapp:main
     - jupyter-nbextension = notebook.nbextensions:main
     - jupyter-serverextension = notebook.serverextensions:main
     - jupyter-bundlerextension = notebook.bundler.bundlerextensions:main
+  skip: true  # [py2k]
 
 requirements:
   host:
@@ -25,21 +28,23 @@ requirements:
     - ipykernel
     - ipython_genutils
     - jinja2
-    - jupyter_core >=4.4.0
-    - jupyter_client >=5.2.0
+    - jupyter_core >=4.6.1
+    - jupyter_client >=5.3.4
     - nbconvert
     - nbformat
     - python
     - pyzmq >=17
     - send2trash
     - terminado >=0.8.1
-    - tornado >=4
+    - tornado >=5.0
     - traitlets >=4.2.1
     - prometheus_client
-    - ipaddress  # [py2k]
 
 test:
+  requires:
+    - pip
   commands:
+    - python -m pip check
     - jupyter notebook -h
     - jupyter nbextension -h
     - jupyter serverextension -h
@@ -48,10 +53,14 @@ test:
     - notebook
 
 about:
-  home: http://jupyter.org
-  license: BSD 3-clause
-  license_file: COPYING.md
+  home: https://jupyter.org
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
   summary: A web-based notebook environment for interactive computing
+  dev_url: https://github.com/jupyter/notebook
+  doc_url: https://jupyter-notebook.readthedocs.io
+  doc_source_url: https://github.com/jupyter/notebook/tree/master/docs
 
 extra:
   recipe-maintainers:
@@ -61,3 +70,5 @@ extra:
     - pelson
     - gnestor
     - takluyver
+    - lresende
+    - bollwyvl

@@ -1,6 +1,6 @@
 {% set name = "pluggy" %}
-{% set version = "0.7.1" %}
-{% set sha256 = "95eb8364a4708392bae89035f45341871286a333f749c3141c20573d2b3876e1" %}
+{% set version = "0.13.1" %}
+{% set sha256 = "15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0" %}
 
 package:
   name: {{ name }}
@@ -14,7 +14,6 @@ source:
 build:
   number: 0
   script: python -m pip install . --no-deps --ignore-installed
-  noarch: python
 
 requirements:
   build:
@@ -23,6 +22,7 @@ requirements:
 
   run:
     - python
+    - importlib_metadata >=0.12  # [py<38]
 
 test:
   imports:
@@ -41,4 +41,3 @@ extra:
   recipe-maintainers:
     - JohnGreeley
     - nicoddemus
-    - tgoodlet

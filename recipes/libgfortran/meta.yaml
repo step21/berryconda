@@ -1,16 +1,69 @@
+{% set libgfortran_version = [3, 0, 0] %}
+{% set libquadmath_version = [0, 0, 0] %}
+{% set libgcc_s_version = [1, 0, 0] %}
+
+
 package:
   name: libgfortran
-  version: "3.0.0"
+  # This is hacked to match the higher version on defaults to make conda-forge 
+  # more compatible with defaults.
+  # The actual libs are the same.
+  version: 3.0.1
 
 build:
-  number: 1
+  number: 0
+  skip: true                                                  # [not osx]
+  always_include_files:
+    - lib/libgfortran.dylib                                   # [osx]
+    - lib/libgfortran.{{ libgfortran_version[0] }}.dylib      # [osx]
+    - lib/libgomp.dylib  # [osx]
+    - lib/libgomp.{{ libgcc_s_version[0] }}.dylib  # [osx]
+
+    # Including libquadmath for the time
+    # being. This will need to be broken
+    # out in the long term.
+    - lib/libquadmath.dylib                                   # [osx]
+    - lib/libquadmath.{{ libquadmath_version[0] }}.dylib      # [osx]
+
+    # Including libgcc_s for the time
+    # being. This will need to be broken
+    # out in the long term.
+    - lib/libgcc_s.{{ libgcc_s_version[0] }}.dylib            # [osx]
+    - lib/libgcc_s_ppc64.{{ libgcc_s_version[0] }}.dylib      # [osx]
+    - lib/libgcc_s_x86_64.{{ libgcc_s_version[0] }}.dylib     # [osx]
+
+requirements:
+  build:
+    - gcc 4.8.5
+
+test:
+  commands:
+    - test -f "${PREFIX}/lib/libgfortran.dylib"                                   # [osx]
+    - test -f "${PREFIX}/lib/libgfortran.{{ libgfortran_version[0] }}.dylib"      # [osx]
+
+    - test -f "${PREFIX}/lib/libgomp.dylib"  # [osx]
+    - test -f "${PREFIX}/lib/libgomp.{{ libgcc_s_version[0] }}.dylib"  # [osx]
+
+    # Including libquadmath for the time
+    # being. This will need to be broken
+    # out in the long term.
+    - test -f "${PREFIX}/lib/libquadmath.dylib"                                   # [osx]
+    - test -f "${PREFIX}/lib/libquadmath.{{ libquadmath_version[0] }}.dylib"      # [osx]
+
+    # Including libgcc_s for the time
+    # being. This will need to be broken
+    # out in the long term.
+    - test -f "${PREFIX}/lib/libgcc_s.{{ libgcc_s_version[0] }}.dylib"            # [osx]
+    - test -f "${PREFIX}/lib/libgcc_s_ppc64.{{ libgcc_s_version[0] }}.dylib"      # [osx]
+    - test -f "${PREFIX}/lib/libgcc_s_x86_64.{{ libgcc_s_version[0] }}.dylib"     # [osx]
 
 about:
-  home: https://gcc.gnu.org/fortran/
-  license: GPL3
-  summary: GNU Fortran runtime library
-  description: |
-    The purpose of the GNU Fortran (GFortran) project is to develop the Fortran
-    compiler front end and run-time libraries for GCC, the GNU Compiler
-    Collection.
-  doc_url: https://gcc.gnu.org/wiki/GFortran
+  home: http://gcc.gnu.org/
+  summary: Fortran libraries from the GNU Compiler Collection
+  license: GPL 3 (with GCC Runtime Library Exception 3.1)
+
+extra:
+  recipe-maintainers:
+    - jakirkham
+    - msarahan
+    - pelson

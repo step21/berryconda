@@ -1,6 +1,7 @@
 REM edited from the one from Anaconda
 
 REM Build step
+nmake -f makefile.msc
 jom -f makefile.msc lib bzip2
 if errorlevel 1 exit 1
 

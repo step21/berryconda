@@ -1,4 +1,4 @@
-{% set version = "0.6.2" %}
+{% set version = "0.8.0" %}
 
 package:
   name: h5netcdf
@@ -6,20 +6,20 @@ package:
 
 source:
   url: https://pypi.io/packages/source/h/h5netcdf/h5netcdf-{{ version }}.tar.gz
-  sha256: 2d80a8f32854e9dab1ce307d8c8bae722a9133818c951a1a2f635758776c974a
+  sha256: b0df12f4692817cf6d8e2fca95f689e61aa68f2f39aea90fd1790fe5ac8d2cbb
 
 build:
   number: 0
   noarch: python
-  script: python -m pip install --no-deps --ignore-installed .
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
   build:
-    - python
+    - python >=3
     - pip
     - h5py
   run:
-    - python
+    - python >=3
     - h5py
 
 test:
@@ -28,9 +28,9 @@ test:
 
 about:
   home: https://github.com/shoyer/h5netcdf
-  license: BSD 3-Clause
+  license: BSD-3-Clause
   license_file: LICENSE
-  summary: 'netCDF4 via h5py.'
+  summary: 'Pythonic interface to netCDF4 via h5py'
 
 extra:
   recipe-maintainers:
@@ -38,3 +38,4 @@ extra:
     - jjhelmus
     - ocefpaf
     - shoyer
+    - kmuehlbauer

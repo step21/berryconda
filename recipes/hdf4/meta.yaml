@@ -9,11 +9,9 @@ source:
   sha256: 55d3a42313bda0aba7b0463687caf819a970e0ba206f5ed2c23724f80d2ae0f3
   patches:
     - max_files.patch
-    # https://salsa.debian.org/debian-gis-team/hdf4/blob/master/debian/patches/hdfi.h
-    - hdfi_h.patch
 
 build:
-  number: 2
+  number: 1003
   run_exports:
     # change SONAMEs with bugfix rev.
     #    https://abi-laboratory.pro/tracker/timeline/hdf5/
@@ -21,14 +19,16 @@ build:
 
 requirements:
   build:
-    - cmake  # [win]
+    - cmake       # [win]
+    - bison       # [not win]
+    - flex        # [not win]
+    - make        # [not win]
+    # To build this on ppc64le we need to run autoreconf so:
+    - libtool     # [not win]
+    - automake    # [not win]
+    - autoconf    # [not win]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - bison  # [not win]
-    - flex  # [not win]
-    - libtool  # [unix]
-    - automake  # [unix]
-    - autoconf  # [unix]
   host:
     - msinttypes  # [win and vc<14]
     - zlib

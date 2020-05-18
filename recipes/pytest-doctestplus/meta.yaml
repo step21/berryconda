@@ -1,7 +1,7 @@
 {% set name = "pytest-doctestplus" %}
-{% set version = "0.1.3" %}
+{% set version = "0.4.0" %}
 {% set git_url = "https://github.com/astropy/pytest-doctestplus" %}
-{% set sha256 = "91a5f81ff9e2038d363f6d49f4ec3c1b9726cc989ae8e3f227689a3793aa51fc" %}
+{% set sha256 = "8872b9c236924af20c39c2813d7f1bde50a1edca7c4aba5a8bfbae3a32360e87" %}
 
 package:
   name: {{ name|lower }}
@@ -21,11 +21,12 @@ requirements:
   build:
     - python
     - pip
-    - pytest >=2.8
+    - pytest >=3.0
     - six
   run:
     - python
-    - pytest >=2.8
+    - pytest >=3.0
+    - numpy >=1.10
     - six
 
 test:
@@ -33,8 +34,10 @@ test:
     - pytest_doctestplus
 
 about:
-  home: {{ git_url }}
-  license: BSD
+  home: {{ git_url }}  
+  license_family: BSD
+  license: BSD 3-Clause  
+  license_file: LICENSE.rst
   summary: 'Pytest plugin with advanced doctest features'
   description: |
     This package contains a plugin for the pytest framework that provides

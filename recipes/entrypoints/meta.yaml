@@ -1,4 +1,4 @@
-{% set version = "0.2.3" %}
+{% set version = "0.3" %}
 
 package:
   name: entrypoints
@@ -6,13 +6,18 @@ package:
 
 source:
   url: https://pypi.io/packages/source/e/entrypoints/entrypoints-{{ version }}.tar.gz
-  sha256: d2d587dde06f99545fb13a383d2cd336a8ff1f359c5839ce3a64c917d10c029f
+  sha256: c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451
 
 build:
-  number: 2
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  number: 1001
+  script:
+    - "flit build --format wheel"
+    - "{{ PYTHON }} -m pip install dist/entrypoints-{{ version }}-py2.py3-none-any.whl --no-deps --ignore-installed --no-cache-dir -vvv"
 
 requirements:
+  build:
+    - python >=3.6
+    - flit
   host:
     - python
     - pip

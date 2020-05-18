@@ -1,18 +1,15 @@
-{% set version = "0.15.63" %}
-# The version_info tuple in __init__.py must also be updated
+{% set version = "0.15.80" %}
 
 package:
   name: ruamel_yaml
   version: {{ version }}
 
 source:
-  url: https://bitbucket.org/ruamel/yaml/get/{{ version }}.tar.gz
-  sha256: 98d9855a79f2b8ab1382571479b0a6e39b8e1094c2a0651f26efd9f99891fa49
-  patches:
-    - ordereddict_test.patch
+  url: https://pypi.io/packages/source/r/ruamel.yaml/ruamel.yaml-{{ version }}.tar.gz
+  sha256: 4f203351575dba0829c7b1e5d376d08cf5f58e4a2b844e8ce552b3e41cd414e6
 
 build:
-  number: 0
+  number: 1001
   no_link: .*\.(pyd|dll)   # [win]
 
 requirements:
@@ -49,3 +46,4 @@ extra:
   recipe-maintainers:
     - jakirkham
     - mbargull
+    - isuruf

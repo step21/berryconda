@@ -1,26 +1,26 @@
-{% set version = "0.19.0" %}
+{% set version = "2.15.0" %}
 
 package:
   name: dask-core
-  version: "{{ version }}"
+  version: {{ version }}
 
 source:
   fn: dask-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/d/dask/dask-{{ version }}.tar.gz
-  sha256: e3b76938d447ff258a151459d9e1d11bc6af1cfd406eebd015429b858709a1de
+  sha256: 911efab5679f26ae53dd20604bb57235fbd33444e59d153d727ccfdcf2516c9d
 
 build:
   number: 0
-  script: python -m pip install --no-deps --ignore-installed .
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
   noarch: python
 
 requirements:
   build:
-    - python
+    - python >=3.6
     - pip
 
   run:
-    - python
+    - python >=3.6
 
 test:
   imports:
@@ -28,10 +28,10 @@ test:
 
 about:
   home: http://github.com/dask/dask/
-  license: BSD 3-Clause
+  license: BSD-3-Clause
   license_file: LICENSE.txt
-  summary: 'Parallel Python with task scheduling'
-  doc_url: https://dask.pydata.org/
+  summary: Parallel Python with task scheduling
+  doc_url: https://dask.org/
   dev_url: https://github.com/dask/dask
 
 extra:
@@ -44,3 +44,4 @@ extra:
     - shoyer
     - sinhrks
     - tomaugspurger
+    - jrbourbeau

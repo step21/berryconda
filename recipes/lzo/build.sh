@@ -19,7 +19,7 @@ cmake -DCMAKE_BUILD_TYPE=Release \
       -DENABLE_STATIC=ON \
       ${EXTRA_CMAKE_ARGS} ${SRC_DIR}
 
-make -j${CPU_COUNT}
+make -j${CPU_COUNT} ${VERBOSE_CM}
 
 # This is the same as `make test` when not using cmake.
 ./lzotest -mlzo -n2 -q ${SRC_DIR}/COPYING

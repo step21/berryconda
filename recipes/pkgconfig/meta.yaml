@@ -1,4 +1,4 @@
-{% set version = "1.3.1" %}
+{% set version = "1.4.0" %}
 
 package:
   name: pkgconfig
@@ -6,22 +6,23 @@ package:
 
 source:
   url: https://github.com/matze/pkgconfig/archive/v{{ version }}.tar.gz
-  sha256: b4b8277cf33df2bfdd73da2bc4faab1b4b65b6d12e295aa6c70987642bcfb5c7
+  sha256: 38c5de8392f4acfe7f36b25d113c496d68f534e983afdbd0ba7240c8c475b161
 
 build:
-  number: 1
-  script: python -m pip install --no-deps --ignore-installed .
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 requirements:
   build:
-    - pkg-config        # [unix]
+    - pkg-config  # [unix]
   host:
     - python
     - pip
     - nose >=1.0
   run:
     - python
-    - m2w64-pkg-config  # [win]
+    - m2w64-pkg-config  # [win and py27]
+    - pkg-config  # [not(win and py27)]
 
 test:
   imports:
@@ -32,7 +33,7 @@ about:
   license: MIT
   license_family: MIT
   license_file: LICENSE
-  summary: 'A Python interface to the pkg-config command line tool'
+  summary: A Python interface to the pkg-config command line tool
 
 extra:
   recipe-maintainers:

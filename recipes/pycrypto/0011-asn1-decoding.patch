@@ -1,0 +1,33 @@
+From: Stefanos Harhalakis <v13@v13.gr>
+Date: Mon, 16 Apr 2018 01:02:09 +0200
+Subject: Fix TypeError in ASN1 implementation
+
+Last-Update: 2014-05-10
+Forwarded: not-needed
+Bug-Debian: https://bugs.debian.org/746180
+---
+ lib/Crypto/Util/asn1.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/Crypto/Util/asn1.py b/lib/Crypto/Util/asn1.py
+index dd5ec31..37957ce 100644
+--- a/lib/Crypto/Util/asn1.py
++++ b/lib/Crypto/Util/asn1.py
+@@ -257,7 +257,7 @@ class DerOctetString(DerObject):
+         self.payload = value
+ 
+     def decode(self, derEle, noLeftOvers=0):
+-        p = DerObject.decode(derEle, noLeftOvers)
++        p = DerObject.decode(self, derEle, noLeftOvers)
+         if not self.isType("OCTET STRING"):
+             raise ValueError("Not a valid OCTET STRING.")
+         return p
+@@ -271,7 +271,7 @@ class DerObjectId(DerObject):
+         DerObject.__init__(self, 'OBJECT IDENTIFIER')
+ 
+     def decode(self, derEle, noLeftOvers=0):
+-        p = DerObject.decode(derEle, noLeftOvers)
++        p = DerObject.decode(self, derEle, noLeftOvers)
+         if not self.isType("OBJECT IDENTIFIER"):
+             raise ValueError("Not a valid OBJECT IDENTIFIER.")
+         return p

@@ -1,13 +1,12 @@
-{% set version = "1.23.0" %}
+{% set version = "2.15.0" %}
 
 package:
   name: distributed
-  version: "{{ version }}"
+  version: {{ version }}
 
 source:
-  fn: distributed-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/d/distributed/distributed-{{ version }}.tar.gz
-  sha256: 13b4a6741ac395bf76cfccfd17ede66abca521d8cec96ba83615c1dede36651f
+  sha256: 5c99b9a672af397e438779230596a774da3a07a4aaf2083ed9e3fc105daf8998
 
 build:
   number: 0
@@ -15,13 +14,11 @@ build:
     - dask-scheduler=distributed.cli.dask_scheduler:go
     - dask-ssh=distributed.cli.dask_ssh:go
     - dask-worker=distributed.cli.dask_worker:go
-    - dask-remote=distributed.cli.dask_remote:go
-    - dask-submit=distributed.cli.dask_submit:go
-    - dask-mpi=distributed.cli.dask_mpi:go
-  script: python -m pip install --no-deps --ignore-installed .
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+  skip: true  # [py<36]
 
 requirements:
-  build:
+  host:
     - python
     - pip
 
@@ -29,19 +26,21 @@ requirements:
     - python
     - click >=6.6
     - cloudpickle >=0.2.2
-    - cytoolz >=0.7.4
-    - dask-core >=0.18.0
-    - futures  # [py2k]
-    - msgpack-python
-    - psutil
+    - cytoolz >=0.8.2
+    - dask-core >=2.9.0
+    - msgpack-python >=0.6.0
+    - psutil >=5.0
     - pyyaml
-    - singledispatch  # [py2k]
-    - six
-    - sortedcontainers
-    - tblib
-    - toolz >=0.7.4
-    - tornado >=4.5.1
+    - sortedcontainers !=2.0.0,!=2.0.1
+    - tblib >=1.6.0
+    - toolz >=0.8.2
+    - tornado >=5  # [py<38]
+    - tornado >=6.0.3  # [py>=38]
     - zict >=0.1.3
+    - setuptools
+
+  run_constrained:
+    - openssl !=1.1.1e
 
 test:
   imports:
@@ -58,14 +57,25 @@ test:
 
 about:
   home: http://distributed.readthedocs.io/en/latest/
-  license: BSD 3-Clause
+  license: BSD-3-Clause
   license_file: LICENSE.txt
-  summary: 'Distributed computing with Dask'
+  license_family: BSD
+  summary: Distributed computing with Dask
+  description: |
+    Distributed is a lightweight library for distributed computing in Python.
+    It extends both the concurrent.futures and dask APIs to moderate sized
+    clusters.
+  doc_url: https://distributed.dask.org
+  doc_source_url: https://github.com/dask/distributed/blob/master/docs/source/index.rst
+  dev_url: https://github.com/dask/distributed
 
 extra:
   recipe-maintainers:
     - mrocklin
-    - pitrou
     - jcrist
     - martindurant
     - jakirkham
+    - marcelotrevisani
+    - ogrisel
+    - tomaugspurger
+    - jrbourbeau

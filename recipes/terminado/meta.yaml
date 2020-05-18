@@ -1,4 +1,4 @@
-{% set version = "0.8.1" %}
+{% set version = "0.8.3" %}
 
 package:
   name: terminado
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/t/terminado/terminado-{{ version }}.tar.gz
-  sha256: 55abf9ade563b8f9be1f34e4233c7b7bde726059947a593322e8a553cc4c067a
+  sha256: 4804a774f802306a7d9af7322193c5390f1da0abb429e082a10ef1d46e6fb2c2
 
 build:
   number: 1
@@ -25,14 +25,6 @@ requirements:
 test:
   imports:
     - terminado
-  requires:
-    - nose
-    - posix  # [win]
-
-  commands:
-    # Failing test on osx: https://github.com/conda-forge/staged-recipes/pull/313#issuecomment-208426267
-    # Tests are passing but hangs at the end on Wnidow :-/
-    - nosetests terminado  # [not (osx or win)]
 
 about:
   home: https://github.com/jupyter/terminado

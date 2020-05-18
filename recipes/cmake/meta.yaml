@@ -1,4 +1,4 @@
-{% set version = "3.12.2" %}
+{% set version = "3.17.0" %}
 
 package:
   name: cmake
@@ -6,8 +6,15 @@ package:
 
 source:
   url: https://gitlab.kitware.com/cmake/cmake/-/archive/v{{ version }}/cmake-v{{ version }}.tar.bz2
-  fn: cmake-{{ version }}.tar.gz
-  sha256: 60292b8927bea2f8c17d9b485ec5cc26f23fd9120fc0fa0e435c3015fe732a62
+  sha256: 9791a8ff223ffbecc5a8985d4a623be8bff037881356f7147fa616e18c23f8c6
+  # Not until Python 3.8 on Windows: https://github.com/WorksApplications/SudachiPy/issues/107#issuecomment-564510365
+  # path: 'C:/opt/Shared.local/src/cmake'
+  # path_via_symlink: True
+  # folder: cmake
+  # git_url: 'C:/opt/Shared.local/src/cmake'
+  # git_url: 'https://gitlab.kitware.com/cmake/cmake'
+  # patches:
+  #   - patches/git/0001-Add-more-debug-logging-to-cmFindCommon.patch
 
 build:
   number: 0
@@ -19,26 +26,29 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - make
+    - make            # [unix]
+    - patch           # [not win]
+    - m2-patch        # [win]
+    # - git
 
   host:
     - bzip2           # [unix]
-    - curl            # [unix]
+    - libcurl         # [unix]
     - expat           # [unix]
     - ncurses         # [unix]
     - xz              # [unix]
     - zlib            # [unix]
-    #- libuv           # [unix]
+    - libuv           # [unix]
     - rhash           # [unix]
 
   run:
     - bzip2           # [unix]
-    - curl            # [unix]
+    - libcurl         # [unix]
     - expat           # [unix]
     - ncurses         # [unix]
     - xz              # [unix]
     - zlib            # [unix]
-    #- libuv           # [unix]
+    - libuv           # [unix]
     - rhash           # [unix]
     - vs2015_runtime  # [win]
 
@@ -54,8 +64,19 @@ test:
 
 about:
   home: http://www.cmake.org/
-  license: BSD 3-clause
+  license: BSD-3-Clause
   license_family: BSD
+  license_file:
+    - Copyright.txt
+    - Utilities/cmbzip2/LICENSE         # [win]
+    - Utilities/cmcurl/COPYING          # [win]
+    - Utilities/cmexpat/COPYING         # [win]
+    - Utilities/cmliblzma/COPYING       # [win]
+    - Utilities/cmzlib/Copyright.txt    # [win]
+    - Utilities/cmlibuv/LICENSE         # [win]
+    - Utilities/cmlibrhash/COPYING      # [win]
+    - Utilities/cmlibarchive/COPYING
+    - Utilities/cmjsoncpp/LICENSE
   summary: CMake is an extensible, open-source system that manages the build process
 
 extra:

@@ -1,4 +1,4 @@
-{% set version = "10.8.0" %}
+{% set version = "13.13.0" %}
 
 package:
   name: nodejs
@@ -6,26 +6,42 @@ package:
 
 source:
   fn: node-v{{ version }}.tar.gz
-  url: https://nodejs.org/dist/v{{ version }}/node-v{{ version }}.tar.gz
-  sha256: 5584205b601a5bb0727eb5dd0c9824caf26ce1c02fd157d31e14b3a8765a0c0c
+  url: https://nodejs.org/dist/v{{ version }}/node-v{{ version }}.tar.gz  # [not win]
+  sha256: bbcb1bbcf78777e402ca220edd8f5c23475ed0164025d8a6bc3367e3e3ac9577  # [not win]
+  url: https://nodejs.org/dist/v{{ version }}/node-v{{ version }}-win-x64.zip  # [win]
+  sha256: 79f2a39c1047666f2bbf2efe53c069a38b8f6ef18d569bf338463aea1914b89d  # [win]
   patches:
-    - macosx-target.patch
+    - linux-librt.patch  # [not win]
+    - cinttypes.patch  # [linux]
+    - linux-install.patch  # [linux]
 
 build:
-  number: 1001
-  ignore_prefix_files:
-    - bin/node
+  number: 0
+  # Prefix replacement breaks in the binary embedded configurations.
+  detect_binary_files_with_prefix: false
 
 requirements:
   build:
     - {{ compiler('c') }}  # [not win]
     - {{ compiler('cxx') }}  # [not win]
-    - python 2.7.*
-    - nasm  # [win]
+    - python 3.7  # [not win]
+    - git  # [linux]
+    - ninja  # [not win]
+    - pkg-config  # [not win]
   host:
     - vs2015_runtime  # [win]
+    - icu  # [not win]
+    - libuv >=1.33  # [not win]
+    - openssl  >=1.1.1d  # [not win]
+    - zlib  # [not win]
   run:
     - vs2015_runtime  # [win]
+    - icu  # [not win]
+    - libuv  # [not win]
+    - openssl  # [not win]
+    - zlib  # [not win]
+  run_constrained:   # [osx]
+    - __osx >={{ MACOSX_DEPLOYMENT_TARGET|default("10.9") }}  # [osx]
 
 test:
   commands:
@@ -35,6 +51,8 @@ test:
     - npm install -h
     - npm config get prefix -g
     - test $(echo "console.log(1 + 3)" | node) == 4  # [not win]
+    - test -f $PREFIX/lib/libnode.79.dylib  # [osx]
+    - test -f $PREFIX/lib/libnode.so.79  # [linux]
 
 about:
   home: https://nodejs.org/
@@ -47,3 +65,5 @@ extra:
     - minrk
     - msarahan
     - pelson
+    - blink1073
+    - xhochy

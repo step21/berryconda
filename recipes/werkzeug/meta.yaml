@@ -1,26 +1,23 @@
 {% set name = "Werkzeug" %}
-{% set version = "0.14.1" %}
-{% set hash_type = "sha256" %}
-{% set hash = "c3fd7a7d41976d9f44db327260e263132466836cef6f91512889ed60ad26557c" %}
+{% set version = "1.0.1" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  {{ hash_type }}: {{ hash }}
+  sha256: 6c80b1e5ad3665290ea39320b91e1be1e0d5f60652b964a3070216de83d2e47c
 
 build:
-  number: 0
   noarch: python
-  script: python setup.py install --single-version-externally-managed --record=record.txt
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 requirements:
-  build:
+  host:
     - python
-    - setuptools
+    - pip
   run:
     - python
 
@@ -28,17 +25,16 @@ test:
   imports:
     - werkzeug
     - werkzeug.debug
-    - werkzeug.contrib
 
 about:
-  home: http://werkzeug.pocoo.org/
+  home: https://palletsprojects.com/p/werkzeug/
   license: BSD 3-Clause
   license_family: BSD
-  license_file: LICENSE
-  summary: The Python WSGI Utility Library.
+  license_file: LICENSE.rst
+  summary: The comprehensive WSGI web application library.
   description: |
     Werkzeug is a WSGI utility library for Python. It's widely used and BSD licensed.
-  doc_url: http://werkzeug.pocoo.org/docs
+  doc_url: https://werkzeug.palletsprojects.com/
   dev_url: https://github.com/pallets/werkzeug
 
 extra:

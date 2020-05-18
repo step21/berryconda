@@ -1,38 +1,39 @@
-{% set version = "2.1.0" %}
-{% set sha256 = "46e7ecbd5aa3b529c2f6720785655fcbc1b9925bee972e2f0dbc39e40980b10a" %}
+{% set version = "3.0.1" %}
+{% set sha256 = "228ff80a3fdbc40ab3b45910e299c9f171248d4291e76df15567add29a74dadd" %}
+{% set standalone_ver = "4.7.5" %}
 
 package:
   name: constructor
   version: {{ version }}
 
 source:
-  fn: constructor-{{ version }}.tar.gz
-  url: https://github.com/conda/constructor/archive/{{ version }}.tar.gz
-  sha256: {{ sha256 }}
+  - url: https://github.com/conda/constructor/archive/{{ version }}.tar.gz
+    sha256: {{ sha256 }}
 
 build:
   number: 0
-  script: python setup.py install --single-version-externally-managed --record=record.txt
+  script: "{{ PYTHON }} -m pip install . -vv"
   entry_points:
     - constructor = constructor.main:main
 
 requirements:
-  build:
+  host:
     - python
-    - setuptools
-
+    - pip
   run:
+    - conda >=4.6
     - python
-    - conda
-    - ruamel_yaml
-    - pillow >=3.1     # [win]
-    - nsis >=3.01      # [win]
+    - ruamel_yaml >=0.11.14,<0.16
+    - conda-standalone
+    - pillow >=3.1  # [win]
+    - nsis >=3.01  # [win]
 
 test:
   imports:
     - constructor
   commands:
-    - constructor --test
+    - constructor -V
+    - constructor --test .
 
 about:
   home: http://github.com/conda/constructor
@@ -40,7 +41,16 @@ about:
   license_family: BSD
   license_file: LICENSE.txt
   summary: create installer from conda packages
+  description: |
+    Constructor is a tool for constructing an installer for a collection of
+    conda packages. It creates an Anaconda-like installer consisting of
+    packages.
+  doc_url: https://conda.io/projects/conda/en/latest/
+  dev_url: https://github.com/conda/constructor
 
 extra:
   recipe-maintainers:
     - jakirkham
+    - mbargull
+    - msarahan
+    - hadim

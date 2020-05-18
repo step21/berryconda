@@ -1,20 +1,17 @@
-{% set name = "astroid" %}
-{% set version = "2.0.2" %}
-{% set sha256 = "a48b57ede295c3188ef5c84273bc2a8eadc46e4cbb001eae0d49fb5d1fabbb19" %}
+{% set version = "2.3.3" %}
 
 package:
-  name: {{ name|lower }}
+  name: astroid
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: {{ sha256 }}
+  url: https://pypi.io/packages/source/a/astroid/astroid-{{ version }}.tar.gz
+  sha256: 71ea07f44df9568a75d0f354c49143a4575d90645e9fead6dfb52c26a85ed13a
 
 build:
-  number: 0
+  number: 3
   skip: True  # [py2k]
-  script: python -m pip install --no-deps --ignore-installed .
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
   host:
@@ -24,16 +21,20 @@ requirements:
   run:
     - python
     - setuptools
-    - lazy-object-proxy
-    - six
-    - wrapt
-    - typed-ast   # [py<37]
+    - lazy-object-proxy ==1.4.*
+    - six >=1.12,<2
+    - wrapt ==1.11.*
+    - typed-ast   # [py<38]
     - typing      # [py<35]
 
 test:
+  requires:
+    - pip
   imports:
     - astroid
     - astroid.modutils
+  commands:
+    - python -m pip check
 
 about:
   home: https://www.astroid.org/
@@ -53,3 +54,4 @@ extra:
     - ericdill
     - jakirkham
     - jjhelmus
+    - ocefpaf

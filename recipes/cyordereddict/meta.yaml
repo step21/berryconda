@@ -9,8 +9,9 @@ source:
   sha256: d9b2c31796999770801a9a49403b8cb49510ecb64e5d1e9d4763ed44f2d5a76e
 
 build:
-  number: 2
-  script: python -m pip install --no-deps --ignore-installed .
+  number: 1003
+  skip: True  # [py>=35]
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
 
 requirements:
   build:

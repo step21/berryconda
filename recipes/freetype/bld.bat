@@ -5,7 +5,7 @@ mkdir build
 cd build
 
 :: Configure.
-cmake -G"%CMAKE_GENERATOR%" ^
+cmake -G"Ninja" ^
       -DCMAKE_INSTALL_PREFIX:PATH="%LIBRARY_PREFIX:/=\\%" ^
       -DCMAKE_BUILD_TYPE=Release ^
       -DCMAKE_PREFIX_PATH="%LIBRARY_PREFIX%:/=\\" ^
@@ -21,7 +21,7 @@ cmake -G"%CMAKE_GENERATOR%" ^
 if errorlevel 1 exit 1
 
 :: Build.
-cmake --build . --config Release
+ninja install
 if errorlevel 1 exit 1
 
 :: Test.
@@ -35,3 +35,7 @@ if errorlevel 1 exit 1
 :: Move everything 1-level down.
 move %LIBRARY_INC%\freetype2\freetype %LIBRARY_INC% || exit 1
 move %LIBRARY_INC%\freetype2\ft2build.h %LIBRARY_INC% || exit 1
+
+:: vs2008 created libfreetype.dll instead of freetype.dll
+set LIB="%LIBRARY_BIN%\libfreetype.dll"
+if exist %LIB% (copy %LIB% %LIBRARY_BIN%\freetype.dll) || exit 1

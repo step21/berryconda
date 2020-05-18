@@ -1,27 +1,30 @@
-{% set version = "2.1.11" %}
+{% set version = "3.1.1" %}
 
 package:
   name: gitpython
   version: {{ version }}
 
 source:
-  url: https://files.pythonhosted.org/packages/source/G/GitPython/GitPython-{{ version }}.tar.gz
-  sha256: 8237dc5bfd6f1366abeee5624111b9d6879393d84745a507de0fda86043b65a8
+  url: https://pypi.io/packages/source/G/GitPython/GitPython-{{ version }}.tar.gz
+  sha256: 6d4f10e2aaad1864bb0f17ec06a2c2831534140e5883c350d58b4e85189dab74
 
 build:
   number: 0
   noarch: python
-  script: python -m pip install --no-deps --ignore-installed .
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 requirements:
-  build:
-    - python
+  host:
+    - python >=3.4
     - pip
   run:
-    - python
-    - gitdb2
+    - python >=3.4
+    - gitdb >=4.0.1,<5
 
 test:
+  requires:
+    - git
+    - pip
   imports:
     - git
     - git.index
@@ -29,17 +32,20 @@ test:
     - git.objects.submodule
     - git.refs
     - git.repo
+  commands:
+    - pip check
 
 about:
   home: https://github.com/gitpython-developers/GitPython
-  license: BSD 3-Clause
+  license: BSD-3-Clause
   license_family: BSD
   license_file: LICENSE
-  summary: 'Python Git Library'
-  doc_url:  http://gitpython.readthedocs.org
+  summary: Python Git Library
+  doc_url: http://gitpython.readthedocs.org
 
 extra:
   recipe-maintainers:
     - jakirkham
     - pelson
     - ocefpaf
+    - xhochy
